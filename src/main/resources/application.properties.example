@@ -1,0 +1,9 @@
+spring.application.name=zakaflow
+
+spring.datasource.url=MASUKKAN_LINK_JDBC_SUPABASE_KALIAN
+spring.datasource.username=postgres
+spring.datasource.password=MASUKKAN_PASSWORD_DATABASE_SUPABASE_KALIAN
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
