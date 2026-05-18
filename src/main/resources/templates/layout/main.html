@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | ZakaFlow'">ZakaFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#ecfdf5',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+<nav th:fragment="navbar" class="bg-primary-800 text-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a th:href="@{/}" class="text-xl font-bold tracking-tight hover:text-primary-50 transition">ZakaFlow</a>
+        <div class="flex gap-6 text-sm font-medium">
+            <a th:href="@{/programs}" class="hover:text-primary-50 transition">Program</a>
+            <a th:href="@{/categories}" class="hover:text-primary-50 transition">Kategori</a>
+            <a th:href="@{/transactions}" class="hover:text-primary-50 transition">Riwayat</a>
+            <a th:href="@{/login}" class="hover:text-primary-50 transition">Masuk</a>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="bg-white border-t border-slate-200 py-6 text-center text-sm text-slate-500 mt-auto">
+    &copy; 2026 ZakaFlow — Sistem Informasi Pengelolaan Zakat &amp; Donasi
+</footer>
+
+</body>
+</html>

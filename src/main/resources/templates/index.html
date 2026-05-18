@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/main :: head('Beranda')}"></head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/main :: navbar}"></nav>
+
+<main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+    <section class="rounded-2xl bg-gradient-to-br from-primary-700 to-primary-800 text-white p-10 shadow-xl mb-10">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Selamat datang di ZakaFlow</h1>
+        <p class="text-primary-50 max-w-xl text-lg">
+            Kelola zakat, infak, dan sedekah dengan transparan dan terpercaya.
+        </p>
+        <a th:href="@{/programs}"
+           class="inline-block mt-6 bg-white text-primary-800 font-semibold px-6 py-3 rounded-lg hover:bg-primary-50 transition shadow">
+            Lihat Program Donasi
+        </a>
+    </section>
+
+    <section>
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">Program Aktif</h2>
+        <div th:if="${#lists.isEmpty(programs)}" class="text-center py-12 text-slate-500 bg-white rounded-xl border">
+            Belum ada program donasi aktif.
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" th:unless="${#lists.isEmpty(programs)}">
+            <article th:each="p : ${programs}"
+                     class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition">
+                <div class="p-5">
+                    <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded"
+                          th:text="${p.category.name}">Kategori</span>
+                    <h3 class="mt-2 text-lg font-semibold text-slate-900" th:text="${p.title}">Judul Program</h3>
+                    <p class="text-sm text-slate-600 mt-2 line-clamp-2" th:text="${p.description}">Deskripsi</p>
+                    <a th:href="@{/programs/{id}(id=${p.id})}"
+                       class="mt-4 block text-center bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition text-sm font-medium">
+                        Lihat Detail
+                    </a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>

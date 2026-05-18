@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/main :: head('Program Donasi')}"></head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/main :: navbar}"></nav>
+
+<main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-slate-900 mb-2">Program Donasi</h1>
+    <p class="text-slate-600 mb-8">Pilih program yang ingin Anda dukung.</p>
+
+    <div th:if="${#lists.isEmpty(programs)}" class="text-center py-16 bg-white rounded-xl border text-slate-500">
+        Belum ada program donasi aktif.
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" th:unless="${#lists.isEmpty(programs)}">
+        <article th:each="p : ${programs}"
+                 class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition">
+            <div class="p-5">
+                <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded"
+                      th:text="${p.category.name}">Kategori</span>
+                <h2 class="mt-2 text-lg font-semibold text-slate-900" th:text="${p.title}">Judul</h2>
+                <p class="text-sm text-slate-600 mt-2 line-clamp-3" th:text="${p.description}">Deskripsi</p>
+
+                <th:block th:with="progress=${p.targetAmount.signum() > 0 ? (p.currentAmount.doubleValue() / p.targetAmount.doubleValue() * 100) : 0}">
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm text-slate-600 mb-1">
+                            <span>Terkumpul</span>
+                            <span th:text="${#numbers.formatDecimal(p.currentAmount, 0, 'COMMA', 0, 'POINT')} + ' / ' + ${#numbers.formatDecimal(p.targetAmount, 0, 'COMMA', 0, 'POINT')}">0</span>
+                        </div>
+                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary-600 rounded-full transition-all"
+                                 th:style="'width:' + ${progress} + '%'"></div>
+                        </div>
+                    </div>
+                </th:block>
+
+                <a th:href="@{/programs/{id}(id=${p.id})}"
+                   class="mt-4 block text-center bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition text-sm font-medium">
+                    Donasi Sekarang
+                </a>
+            </div>
+        </article>
+    </div>
+</main>
+
+<footer th:replace="~{layout/main :: footer}"></footer>
+</body>
+</html>
