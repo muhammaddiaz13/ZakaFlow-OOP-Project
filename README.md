@@ -1,7 +1,9 @@
 # ZakaFlow-OOP-Project
 Sistem Informasi Pengelolaan Donasi &amp; Zakat - Final Project OOP.
 
-Member team:
+Dosen Pengampu: Dr. Jos Timanta Tarigan S.Kom., M.Sc.
+
+Anggota Tim:
 1. Muhammad Diaz William Bevan (241401088): Ketua Repositori
 2. Risky Jonalson Silaen (241401010)
 3. Arkaan Ramadhan Rusdi (241401080)
