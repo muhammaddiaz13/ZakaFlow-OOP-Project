@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,20 +120,26 @@ public class DonationProgramServiceImpl implements DonationProgramService {
         program.setVideoUrl(blankToNull(form.getVideoUrl()));
         program.setMinDonationAmount(form.getMinDonationAmount());
         program.setQuickAmounts(normalizeQuickAmounts(form.getQuickAmounts()));
-        program.setStatus(form.getStatus() != null ? form.getStatus() : ProgramStatus.DRAFT);
+        ProgramStatus status = form.getStatus() != null ? form.getStatus() : ProgramStatus.DRAFT;
+        program.setStatus(status);
         program.setPersonInCharge(blankToNull(form.getPersonInCharge()));
         program.setCategory(category);
-        program.setCompleted(resolveCompleted(program, form.getStatus()));
+
+        if (status == ProgramStatus.ACTIVE && program.getStartDate() == null) {
+            program.setStartDate(LocalDate.now());
+        }
+
+        program.setCompleted(resolveCompleted(program, status));
     }
 
     private boolean resolveCompleted(DonationProgram program, ProgramStatus status) {
         if (status == ProgramStatus.CLOSED) {
             return true;
         }
-        if (!program.isOpenEnded()
-                && program.getTargetAmount() != null
-                && program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0) {
-            return true;
+        if (status == ProgramStatus.ACTIVE) {
+            return !program.isOpenEnded()
+                    && program.getTargetAmount() != null
+                    && program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0;
         }
         return false;
     }

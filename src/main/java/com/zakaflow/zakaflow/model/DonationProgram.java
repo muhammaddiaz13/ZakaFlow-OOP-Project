@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -139,14 +140,26 @@ public class DonationProgram {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Program tampil di beranda/katalog jika status ACTIVE dan dalam periode tanggal (jika diisi).
+     * Target tercapai (isCompleted) tidak menyembunyikan program — donasi saja yang ditutup.
+     */
     public boolean isPubliclyVisible() {
-        if (status != ProgramStatus.ACTIVE || isCompleted) {
-            return false;
+        return getPublicVisibilityBlockReason().isEmpty();
+    }
+
+    public Optional<String> getPublicVisibilityBlockReason() {
+        if (status != ProgramStatus.ACTIVE) {
+            return Optional.of("Status harus Published / Active (saat ini: "
+                    + (status != null ? status.getLabel() : "tidak diatur") + ")");
         }
         LocalDate today = LocalDate.now();
         if (startDate != null && today.isBefore(startDate)) {
-            return false;
+            return Optional.of("Belum mulai (tanggal mulai: " + startDate + ")");
         }
-        return endDate == null || !today.isAfter(endDate);
+        if (endDate != null && today.isAfter(endDate)) {
+            return Optional.of("Sudah berakhir (deadline: " + endDate + ")");
+        }
+        return Optional.empty();
     }
 }

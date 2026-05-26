@@ -45,6 +45,7 @@
                 <tr>
                     <th class="text-left px-4 py-3 font-semibold text-stone-700">Program</th>
                     <th class="text-left px-4 py-3 font-semibold text-stone-700 hidden md:table-cell">Status</th>
+                    <th class="text-left px-4 py-3 font-semibold text-stone-700 hidden lg:table-cell">Tampil Publik</th>
                     <th class="text-right px-4 py-3 font-semibold text-stone-700">Aksi</th>
                 </tr>
                 </thead>
@@ -59,6 +60,13 @@
                         <span class="px-2 py-1 rounded text-xs font-medium bg-primary-50 text-primary-800"
                               th:text="${p.status.label}">Draft</span>
                     </td>
+                    <td class="px-4 py-3 hidden lg:table-cell">
+                        <span th:if="${p.publiclyVisible}"
+                              class="px-2 py-1 rounded text-xs font-medium bg-green-50 text-green-700">Ya</span>
+                        <span th:unless="${p.publiclyVisible}"
+                              class="px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-800"
+                              th:text="${p.publicVisibilityBlockReason.orElse('Tidak tampil')}">Tidak</span>
+                    </td>
                     <td class="px-4 py-3">
                         <div class="flex justify-end gap-2">
                             <a th:href="@{/profile/programs/{id}/edit(id=${p.id})}"
@@ -66,10 +74,11 @@
                                 Edit
                             </a>
                             <form th:action="@{/profile/programs/{id}/delete(id=${p.id})}" method="post"
-                                  onsubmit="return confirm('Yakin ingin menghapus program ini? Tindakan tidak dapat dibatalkan.');">
+                                  class="delete-program-form"
+                                  th:attr="data-program-title=${p.title}">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                <button type="submit"
-                                        class="px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition">
+                                <button type="button"
+                                        class="btn-delete-program px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition">
                                     Hapus
                                 </button>
                             </form>
@@ -173,5 +182,47 @@
 </main>
 
 <footer th:replace="~{layout/main :: footer}"></footer>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    document.querySelectorAll('.btn-delete-program').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const form = btn.closest('.delete-program-form');
+            const title = form.dataset.programTitle || 'program ini';
+
+            Swal.fire({
+                title: 'Hapus program?',
+                text: 'Yakin ingin menghapus "' + title + '"? Tindakan ini tidak dapat dibatalkan.',
+                icon: 'warning',
+                iconColor: '#c97d4f',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'rounded-2xl',
+                    title: 'text-stone-900',
+                    confirmButton: 'rounded-lg px-5 py-2.5 font-semibold',
+                    cancelButton: 'rounded-lg px-5 py-2.5 font-semibold'
+                },
+                buttonsStyling: false,
+                didOpen: function () {
+                    const confirmBtn = Swal.getConfirmButton();
+                    const cancelBtn = Swal.getCancelButton();
+                    confirmBtn.style.backgroundColor = '#dc2626';
+                    confirmBtn.style.color = '#fff';
+                    cancelBtn.style.backgroundColor = '#f0ebe3';
+                    cancelBtn.style.color = '#334833';
+                }
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
