@@ -7,3 +7,27 @@ spring.datasource.password=MASUKKAN_PASSWORD_DATABASE_SUPABASE_KALIAN
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Informasi rekening / pembayaran (donatur bisa transfer dari bank manapun)
+zakaflow.payment.qris-merchant=ZakaFlow Donasi
+zakaflow.payment.ewallet-info=GoPay / OVO / DANA — 081234567890 (a.n. ZakaFlow)
+
+# Daftar rekening tujuan (boleh lebih dari satu bank)
+zakaflow.payment.bank-accounts[0].bank-name=BCA
+zakaflow.payment.bank-accounts[0].account-number=1234567890
+zakaflow.payment.bank-accounts[0].account-holder=Yayasan ZakaFlow
+zakaflow.payment.bank-accounts[1].bank-name=BRI
+zakaflow.payment.bank-accounts[1].account-number=9876543210
+zakaflow.payment.bank-accounts[1].account-holder=Yayasan ZakaFlow
+zakaflow.payment.bank-accounts[2].bank-name=Bank Mandiri
+zakaflow.payment.bank-accounts[2].account-number=1122334455
+zakaflow.payment.bank-accounts[2].account-holder=Yayasan ZakaFlow
+zakaflow.payment.bank-accounts[3].bank-name=BNI
+zakaflow.payment.bank-accounts[3].account-number=5566778899
+zakaflow.payment.bank-accounts[3].account-holder=Yayasan ZakaFlow
+zakaflow.payment.bank-accounts[4].bank-name=BTN
+zakaflow.payment.bank-accounts[4].account-number=6677889900
+zakaflow.payment.bank-accounts[4].account-holder=Yayasan ZakaFlow
+zakaflow.payment.bank-accounts[5].bank-name=BSI (Bank Syariah)
+zakaflow.payment.bank-accounts[5].account-number=7788990011
+zakaflow.payment.bank-accounts[5].account-holder=Yayasan ZakaFlow

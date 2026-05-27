@@ -27,6 +27,13 @@ public class DonationTransaction {
     @Column(nullable = false, length = 20)
     private TransactionStatus status = TransactionStatus.PENDING;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private PaymentMethod paymentMethod = PaymentMethod.TRANSFER_BANK;
+
+    @Column(length = 100)
+    private String paymentReference;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude

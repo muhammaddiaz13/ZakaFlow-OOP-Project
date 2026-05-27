@@ -8,6 +8,4 @@ import java.util.List;
 public interface DonationTransactionRepository extends JpaRepository<DonationTransaction, Long> {
 
     List<DonationTransaction> findByUser_Id(Long userId);
-
-    long countByProgram_Id(Long programId);
 }

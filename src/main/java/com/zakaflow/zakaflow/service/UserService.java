@@ -19,5 +19,9 @@ public interface UserService {
 
     User registerDonatur(String username, String email, String rawPassword);
 
+    User updateEmail(Long userId, String email);
+
+    void changePassword(Long userId, String currentPassword, String newPassword);
+
     void deleteById(Long id);
 }

@@ -2,6 +2,7 @@ package com.zakaflow.zakaflow.service.impl;
 
 import com.zakaflow.zakaflow.model.DonationProgram;
 import com.zakaflow.zakaflow.model.DonationTransaction;
+import com.zakaflow.zakaflow.model.PaymentMethod;
 import com.zakaflow.zakaflow.model.TransactionStatus;
 import com.zakaflow.zakaflow.model.User;
 import com.zakaflow.zakaflow.repository.DonationProgramRepository;
@@ -42,7 +43,7 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
 
     @Override
     @Transactional
-    public DonationTransaction create(Long userId, Long programId, BigDecimal amount) {
+    public DonationTransaction create(Long userId, Long programId, BigDecimal amount, PaymentMethod paymentMethod) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
         DonationProgram program = programRepository.findById(programId)
@@ -51,19 +52,65 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
         if (program.isCompleted()) {
             throw new IllegalStateException("Program donasi sudah selesai");
         }
+        if (paymentMethod == null) {
+            throw new IllegalArgumentException("Metode pembayaran wajib dipilih");
+        }
 
         DonationTransaction transaction = new DonationTransaction();
         transaction.setUser(user);
         transaction.setProgram(program);
         transaction.setAmount(amount);
-        transaction.setStatus(TransactionStatus.SUCCESS);
+        transaction.setPaymentMethod(paymentMethod);
+        transaction.setStatus(TransactionStatus.PENDING);
 
-        program.setCurrentAmount(program.getCurrentAmount().add(amount));
-        if (!program.isOpenEnded()
-                && program.getTargetAmount() != null
-                && program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0) {
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
+    @Transactional
+    public DonationTransaction confirmPayment(Long transactionId, Long userId, String paymentReference) {
+        DonationTransaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan"));
+
+        if (!transaction.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("Akses ditolak");
+        }
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
+            throw new IllegalStateException("Transaksi sudah diproses");
+        }
+
+        if (paymentReference != null && !paymentReference.isBlank()) {
+            transaction.setPaymentReference(paymentReference.trim());
+        }
+
+        return completeTransaction(transaction);
+    }
+
+    @Override
+    @Transactional
+    public DonationTransaction approvePayment(Long transactionId) {
+        DonationTransaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new IllegalArgumentException("Transaksi tidak ditemukan"));
+
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
+            throw new IllegalStateException("Hanya transaksi pending yang dapat disetujui");
+        }
+
+        return completeTransaction(transaction);
+    }
+
+    private DonationTransaction completeTransaction(DonationTransaction transaction) {
+        DonationProgram program = transaction.getProgram();
+        if (program.isCompleted()) {
+            throw new IllegalStateException("Program donasi sudah selesai");
+        }
+
+        transaction.setStatus(TransactionStatus.SUCCESS);
+        program.setCurrentAmount(program.getCurrentAmount().add(transaction.getAmount()));
+        if (program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0) {
             program.setCompleted(true);
         }
+        programRepository.save(program);
 
         return transactionRepository.save(transaction);
     }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/admin :: head('Kelola Pengguna')}"></head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/admin :: navbar}" th:with="activePage='users'"></nav>
+
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-stone-900 mb-2">Kelola Pengguna</h1>
+    <p class="text-stone-600 mb-8">Daftar akun terdaftar di sistem.</p>
+
+    <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-x-auto">
+        <table class="w-full text-sm min-w-[560px]">
+            <thead class="bg-stone-50 border-b border-stone-200">
+            <tr>
+                <th class="text-left px-5 py-3 font-semibold">#</th>
+                <th class="text-left px-5 py-3 font-semibold">Username</th>
+                <th class="text-left px-5 py-3 font-semibold">Email</th>
+                <th class="text-center px-5 py-3 font-semibold">Peran</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u, stat : ${users}" class="border-b border-stone-100 hover:bg-stone-50/50">
+                <td class="px-5 py-4 text-stone-500" th:text="${stat.count}">1</td>
+                <td class="px-5 py-4 font-medium" th:text="${u.username}">-</td>
+                <td class="px-5 py-4 text-stone-600" th:text="${u.email}">-</td>
+                <td class="px-5 py-4 text-center">
+                    <span th:class="${u.role == 'ADMIN'} ? 'bg-stone-800 text-white' : 'bg-primary-100 text-primary-800'"
+                          class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                          th:text="${u.role}">DONATUR</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{layout/admin :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/admin :: head('Riwayat Transaksi')}"></head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/admin :: navbar}" th:with="activePage='transactions'"></nav>
+
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-stone-900 mb-2">Riwayat Transaksi</h1>
+    <p class="text-stone-600 mb-8">Semua donasi yang tercatat di sistem.</p>
+
+    <div th:replace="~{layout/admin :: alerts}"></div>
+
+    <div th:if="${#lists.isEmpty(transactions)}" class="text-center py-16 bg-white rounded-xl border text-stone-500">
+        Belum ada transaksi donasi.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(transactions)}"
+         class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-x-auto">
+        <table class="w-full text-sm min-w-[860px]">
+            <thead class="bg-stone-50 border-b border-stone-200">
+            <tr>
+                <th class="text-left px-5 py-3 font-semibold">Tanggal</th>
+                <th class="text-left px-5 py-3 font-semibold">Donatur</th>
+                <th class="text-left px-5 py-3 font-semibold">Program</th>
+                <th class="text-left px-5 py-3 font-semibold">Pembayaran</th>
+                <th class="text-right px-5 py-3 font-semibold">Jumlah</th>
+                <th class="text-center px-5 py-3 font-semibold">Status</th>
+                <th class="text-center px-5 py-3 font-semibold">Aksi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${transactions}" class="border-b border-stone-100 hover:bg-stone-50/50">
+                <td class="px-5 py-4 text-stone-600"
+                    th:text="${#temporals.format(t.transactionDate, 'dd MMM yyyy HH:mm')}">-</td>
+                <td class="px-5 py-4 font-medium" th:text="${t.user.username}">-</td>
+                <td class="px-5 py-4" th:text="${t.program.title}">-</td>
+                <td class="px-5 py-4 text-stone-600">
+                    <span th:text="${t.paymentMethod.label}">QRIS</span>
+                    <span th:if="${t.paymentReference}" class="block text-xs text-stone-400 font-mono"
+                          th:text="${t.paymentReference}">ref</span>
+                </td>
+                <td class="px-5 py-4 text-right font-medium text-primary-700"
+                    th:text="'Rp ' + ${#numbers.formatDecimal(t.amount, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td class="px-5 py-4 text-center">
+                    <span th:switch="${t.status.name()}"
+                          th:class="${t.status.name() == 'SUCCESS'} ? 'bg-green-50 text-green-700' : (${t.status.name() == 'PENDING'} ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700')"
+                          class="px-2 py-1 rounded text-xs font-medium"
+                          th:text="${t.status}">-</span>
+                </td>
+                <td class="px-5 py-4 text-center">
+                    <form th:if="${t.status.name() == 'PENDING'}"
+                          th:action="@{/admin/transactions/{id}/approve(id=${t.id})}" method="post" class="inline">
+                        <button type="submit"
+                                class="text-xs font-semibold text-primary-700 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded">
+                            Setujui
+                        </button>
+                    </form>
+                    <span th:if="${t.status.name() != 'PENDING'}" class="text-stone-400 text-xs">—</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{layout/admin :: footer}"></footer>
+</body>
+</html>

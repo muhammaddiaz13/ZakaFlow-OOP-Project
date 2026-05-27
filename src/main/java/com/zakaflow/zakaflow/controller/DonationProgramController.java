@@ -1,5 +1,6 @@
 package com.zakaflow.zakaflow.controller;
 
+import com.zakaflow.zakaflow.model.PaymentMethod;
 import com.zakaflow.zakaflow.service.DonationProgramService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,12 +24,9 @@ public class DonationProgramController {
 
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
-        var program = donationProgramService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Program tidak ditemukan"));
-        if (!program.isPubliclyVisible()) {
-            throw new IllegalArgumentException("Program tidak tersedia");
-        }
-        model.addAttribute("program", program);
+        model.addAttribute("program", donationProgramService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Program tidak ditemukan")));
+        model.addAttribute("paymentMethods", PaymentMethod.values());
         return "programs/detail";
     }
 }

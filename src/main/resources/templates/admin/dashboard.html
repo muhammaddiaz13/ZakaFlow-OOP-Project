@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/admin :: head('Dashboard')}"></head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/admin :: navbar}" th:with="activePage='dashboard'"></nav>
+
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-stone-900 mb-2">Dashboard Admin</h1>
+    <p class="text-stone-600 mb-8">Ringkasan sistem pengelolaan zakat & donasi.</p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase text-stone-500">Pengguna</p>
+            <p class="text-3xl font-bold text-stone-900 mt-2" th:text="${userCount}">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase text-stone-500">Program Aktif</p>
+            <p class="text-3xl font-bold text-primary-700 mt-2" th:text="${activeProgramCount} + ' / ' + ${programCount}">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+            <p class="text-xs font-semibold uppercase text-stone-500">Kategori</p>
+            <p class="text-3xl font-bold text-accent-700 mt-2" th:text="${categoryCount}">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-stone-800 to-stone-900 rounded-2xl p-5 text-white shadow-md">
+            <p class="text-xs font-semibold uppercase text-white/70">Total Terkumpul</p>
+            <p class="text-2xl font-bold mt-2"
+               th:text="'Rp ' + ${#numbers.formatDecimal(totalCollected, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
+            <p class="text-xs text-white/60 mt-1" th:text="${transactionCount} + ' transaksi'">0 transaksi</p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+        <a th:href="@{/admin/programs/new}"
+           class="bg-white border border-stone-200 rounded-xl p-5 hover:border-primary-400 hover:shadow-md transition">
+            <p class="font-semibold text-stone-900">+ Tambah Program</p>
+            <p class="text-sm text-stone-500 mt-1">Buat program donasi baru</p>
+        </a>
+        <a th:href="@{/admin/categories/new}"
+           class="bg-white border border-stone-200 rounded-xl p-5 hover:border-primary-400 hover:shadow-md transition">
+            <p class="font-semibold text-stone-900">+ Tambah Kategori</p>
+            <p class="text-sm text-stone-500 mt-1">Klasifikasi jenis donasi</p>
+        </a>
+        <a th:href="@{/admin/transactions}"
+           class="bg-white border border-stone-200 rounded-xl p-5 hover:border-primary-400 hover:shadow-md transition">
+            <p class="font-semibold text-stone-900">Lihat Transaksi</p>
+            <p class="text-sm text-stone-500 mt-1">Semua riwayat donasi</p>
+        </a>
+    </div>
+
+    <section>
+        <h2 class="text-xl font-bold text-stone-900 mb-4">Transaksi Terbaru</h2>
+        <div th:if="${#lists.isEmpty(recentTransactions)}"
+             class="text-center py-12 bg-white rounded-xl border border-stone-200 text-stone-500">
+            Belum ada transaksi.
+        </div>
+        <div th:unless="${#lists.isEmpty(recentTransactions)}"
+             class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-x-auto">
+            <table class="w-full text-sm min-w-[640px]">
+                <thead class="bg-stone-50 border-b border-stone-200">
+                <tr>
+                    <th class="text-left px-5 py-3 font-semibold">Tanggal</th>
+                    <th class="text-left px-5 py-3 font-semibold">Donatur</th>
+                    <th class="text-left px-5 py-3 font-semibold">Program</th>
+                    <th class="text-right px-5 py-3 font-semibold">Jumlah</th>
+                    <th class="text-center px-5 py-3 font-semibold">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${recentTransactions}" class="border-b border-stone-100 hover:bg-stone-50/50">
+                    <td class="px-5 py-3 text-stone-600"
+                        th:text="${#temporals.format(t.transactionDate, 'dd MMM yyyy HH:mm')}">-</td>
+                    <td class="px-5 py-3 font-medium" th:text="${t.user.username}">-</td>
+                    <td class="px-5 py-3" th:text="${t.program.title}">-</td>
+                    <td class="px-5 py-3 text-right font-medium text-primary-700"
+                        th:text="'Rp ' + ${#numbers.formatDecimal(t.amount, 0, 'COMMA', 0, 'POINT')}">0</td>
+                    <td class="px-5 py-3 text-center">
+                        <span th:class="${t.status.name() == 'SUCCESS'} ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'"
+                              class="px-2 py-1 rounded text-xs font-medium" th:text="${t.status}">-</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{layout/admin :: footer}"></footer>
+</body>
+</html>

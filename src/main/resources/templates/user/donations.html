@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/user :: head('Riwayat Donasi')}"></head>
+<body class="bg-surface-50 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/user :: navbar}" th:with="activePage='donations'"></nav>
+
+<main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-stone-900 mb-2">Riwayat Donasi Saya</h1>
+    <p class="text-stone-600 mb-6">Semua transaksi donasi yang Anda lakukan.</p>
+
+    <div th:replace="~{layout/user :: alerts}"></div>
+
+    <form th:action="@{/user/donations}" method="get"
+          class="bg-white rounded-xl border border-surface-200 p-5 mb-6 grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <div>
+            <label for="status" class="block text-xs font-medium text-stone-500 mb-1">Status</label>
+            <select id="status" name="status"
+                    class="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm">
+                <option value="">Semua</option>
+                <option th:each="s : ${statuses}" th:value="${s.name()}" th:text="${s}"
+                        th:selected="${filterStatus == s.name()}">STATUS</option>
+            </select>
+        </div>
+        <div>
+            <label for="programId" class="block text-xs font-medium text-stone-500 mb-1">Program</label>
+            <select id="programId" name="programId"
+                    class="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm">
+                <option value="">Semua program</option>
+                <option th:each="p : ${userPrograms}" th:value="${p.id}" th:text="${p.title}"
+                        th:selected="${filterProgramId != null and filterProgramId == p.id}">Program</option>
+            </select>
+        </div>
+        <div>
+            <label for="dateFrom" class="block text-xs font-medium text-stone-500 mb-1">Dari tanggal</label>
+            <input type="date" id="dateFrom" name="dateFrom" th:value="${filterDateFrom}"
+                   class="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm"/>
+        </div>
+        <div>
+            <label for="dateTo" class="block text-xs font-medium text-stone-500 mb-1">Sampai tanggal</label>
+            <input type="date" id="dateTo" name="dateTo" th:value="${filterDateTo}"
+                   class="w-full px-3 py-2 border border-surface-200 rounded-lg text-sm"/>
+        </div>
+        <div class="flex gap-2">
+            <button type="submit"
+                    class="flex-1 bg-primary-700 hover:bg-primary-800 text-white font-semibold py-2 rounded-lg text-sm transition">
+                Filter
+            </button>
+            <a th:href="@{/user/donations}"
+               class="px-3 py-2 border border-surface-200 rounded-lg text-sm text-stone-600 hover:bg-surface-50">Reset</a>
+        </div>
+    </form>
+
+    <div th:if="${#lists.isEmpty(transactions)}"
+         class="text-center py-16 bg-white rounded-xl border border-surface-200 text-stone-500">
+        <p class="mb-4">Tidak ada transaksi yang cocok dengan filter.</p>
+        <a th:href="@{/user/programs}"
+           class="inline-block bg-primary-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-primary-700 transition">
+            Lihat Program Donasi
+        </a>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(transactions)}"
+         class="bg-white rounded-xl shadow-sm border border-surface-200 overflow-x-auto">
+        <table class="w-full text-sm min-w-[640px]">
+            <thead class="bg-surface-100 border-b border-surface-200">
+            <tr>
+                <th class="text-left px-6 py-3 font-semibold text-stone-700">Tanggal</th>
+                <th class="text-left px-6 py-3 font-semibold text-stone-700">Program</th>
+                <th class="text-left px-6 py-3 font-semibold text-stone-700">Pembayaran</th>
+                <th class="text-right px-6 py-3 font-semibold text-stone-700">Jumlah</th>
+                <th class="text-center px-6 py-3 font-semibold text-stone-700">Status</th>
+                <th class="text-center px-6 py-3 font-semibold text-stone-700">Aksi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${transactions}" class="border-b border-surface-100 hover:bg-surface-50/50">
+                <td class="px-6 py-4 text-stone-600"
+                    th:text="${#temporals.format(t.transactionDate, 'dd MMM yyyy HH:mm')}">Tanggal</td>
+                <td class="px-6 py-4 font-medium" th:text="${t.program.title}">Program</td>
+                <td class="px-6 py-4 text-stone-600" th:text="${t.paymentMethod.label}">QRIS</td>
+                <td class="px-6 py-4 text-right font-medium text-primary-700"
+                    th:text="'Rp ' + ${#numbers.formatDecimal(t.amount, 0, 'COMMA', 0, 'POINT')}">0</td>
+                <td class="px-6 py-4 text-center">
+                    <span th:switch="${t.status.name()}"
+                          th:class="${t.status.name() == 'SUCCESS'} ? 'bg-green-50 text-green-700' : (${t.status.name() == 'PENDING'} ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700')"
+                          class="px-2 py-1 rounded text-xs font-medium"
+                          th:text="${t.status}">Status</span>
+                </td>
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <a th:if="${t.status.name() == 'PENDING'}" th:href="@{/user/payment/{id}(id=${t.id})}"
+                       class="text-accent-700 hover:text-accent-900 font-medium mr-2">Bayar</a>
+                    <a th:href="@{/user/donations/{id}(id=${t.id})}"
+                       class="text-primary-700 hover:text-primary-900 font-medium">Detail</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{layout/user :: footer}"></footer>
+</body>
+</html>

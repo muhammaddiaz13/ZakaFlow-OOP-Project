@@ -18,13 +18,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/error", "/css/**", "/js/**", "/img/**", "/uploads/**").permitAll()
-                        .requestMatchers("/profile/programs/**").hasRole("ADMIN")
-                        .requestMatchers("/transactions/**", "/profile/**").hasAnyRole("ADMIN", "DONATUR")
+                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/error", "/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/user/**").hasRole("DONATUR")
+                        .requestMatchers("/admin/**", "/transactions/**").hasRole("ADMIN")
                         .anyRequest().hasRole("ADMIN"))
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler(new RoleBasedAuthenticationSuccessHandler())
                         .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")

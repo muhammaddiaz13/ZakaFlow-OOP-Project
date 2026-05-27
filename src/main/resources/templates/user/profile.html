@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/user :: head('Profil')}"></head>
+<body class="bg-surface-50 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/user :: navbar}" th:with="activePage='profile'"></nav>
+
+<main class="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+    <h1 class="text-3xl font-bold text-stone-900 mb-8">Profil Saya</h1>
+
+    <div th:replace="~{layout/user :: alerts}"></div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-surface-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-800 to-primary-900 px-8 py-10 text-white">
+            <div class="w-16 h-16 rounded-full bg-accent-500 flex items-center justify-center text-2xl font-bold mb-4"
+                 th:text="${#strings.toUpperCase(#strings.substring(user.username, 0, 1))}">D</div>
+            <h2 class="text-2xl font-bold" th:text="${user.username}">username</h2>
+            <p class="text-white/80 text-sm mt-1" th:text="${user.email}">email</p>
+        </div>
+
+        <dl class="divide-y divide-surface-200">
+            <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
+                <dt class="text-sm font-medium text-stone-500">Username</dt>
+                <dd class="text-sm font-semibold text-stone-900" th:text="${user.username}">-</dd>
+            </div>
+            <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
+                <dt class="text-sm font-medium text-stone-500">Email</dt>
+                <dd class="text-sm font-semibold text-stone-900" th:text="${user.email}">-</dd>
+            </div>
+            <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
+                <dt class="text-sm font-medium text-stone-500">Peran</dt>
+                <dd>
+                    <span class="inline-block text-xs font-semibold bg-primary-100 text-primary-800 px-3 py-1 rounded-full"
+                          th:text="${user.role}">DONATUR</span>
+                </dd>
+            </div>
+        </dl>
+
+        <div class="px-8 py-6 bg-surface-50 border-t border-surface-200 flex flex-wrap gap-3">
+            <a th:href="@{/user/profile/edit}"
+               class="flex-1 min-w-[140px] text-center bg-primary-700 hover:bg-primary-800 text-white font-semibold py-2.5 rounded-lg transition">
+                Edit Email
+            </a>
+            <a th:href="@{/user/profile/password}"
+               class="flex-1 min-w-[140px] text-center border border-primary-300 text-primary-800 hover:bg-primary-50 font-semibold py-2.5 rounded-lg transition">
+                Ubah Password
+            </a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/user :: footer}"></footer>
+</body>
+</html>

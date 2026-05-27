@@ -66,6 +66,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public User updateEmail(Long userId, String email) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+        String trimmed = email.trim();
+        userRepository.findByEmail(trimmed).ifPresent(existing -> {
+            if (!existing.getId().equals(userId)) {
+                throw new IllegalArgumentException("Email sudah digunakan");
+            }
+        });
+        user.setEmail(trimmed);
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Password lama tidak sesuai");
+        }
+        if (newPassword == null || newPassword.length() < 6) {
+            throw new IllegalArgumentException("Password baru minimal 6 karakter");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }

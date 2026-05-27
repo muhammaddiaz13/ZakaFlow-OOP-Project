@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head th:replace="~{layout/admin :: head('Kelola Kategori')}"></head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:replace="~{layout/admin :: navbar}" th:with="activePage='categories'"></nav>
+
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-stone-900">Kelola Kategori</h1>
+            <p class="text-stone-600 mt-1">Klasifikasi zakat, infak, dan sedekah.</p>
+        </div>
+        <a th:href="@{/admin/categories/new}"
+           class="bg-primary-700 hover:bg-primary-800 text-white font-semibold px-5 py-2.5 rounded-lg transition">
+            + Tambah Kategori
+        </a>
+    </div>
+
+    <div th:replace="~{layout/admin :: alerts}"></div>
+
+    <div th:if="${#lists.isEmpty(categories)}" class="text-center py-16 bg-white rounded-xl border text-stone-500">
+        Belum ada kategori.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(categories)}" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article th:each="c : ${categories}"
+                 class="bg-white rounded-xl border border-stone-200 p-6 shadow-sm hover:shadow-md transition">
+            <h2 class="text-lg font-semibold text-stone-900" th:text="${c.name}">Nama</h2>
+            <p class="text-sm text-stone-600 mt-2" th:text="${c.description}">Deskripsi</p>
+            <div class="mt-5 flex gap-3 text-sm">
+                <a th:href="@{/admin/categories/{id}/edit(id=${c.id})}"
+                   class="text-primary-700 hover:text-primary-900 font-medium">Edit</a>
+                <form th:action="@{/admin/categories/{id}/delete(id=${c.id})}" method="post"
+                      onsubmit="return confirm('Hapus kategori ini?');">
+                    <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Hapus</button>
+                </form>
+            </div>
+        </article>
+    </div>
+</main>
+
+<footer th:replace="~{layout/admin :: footer}"></footer>
+</body>
+</html>

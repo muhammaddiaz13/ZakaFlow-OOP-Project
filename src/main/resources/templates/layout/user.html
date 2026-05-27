@@ -11,7 +11,6 @@
             theme: {
                 extend: {
                     colors: {
-                        /* Sage & forest — hijab & spanduk di bg.jpg */
                         primary: {
                             50:  '#f4f7f2',
                             100: '#e3ebe0',
@@ -25,7 +24,6 @@
                             900: '#2a3b29',
                             950: '#1a2619',
                         },
-                        /* Terracotta & golden hour — atap, batik, cahaya matahari */
                         accent: {
                             50:  '#fdf8f3',
                             100: '#faeee3',
@@ -38,7 +36,6 @@
                             800: '#6f4129',
                             900: '#5a3522',
                         },
-                        /* Krem hangat — kardus & langit senja */
                         surface: {
                             50:  '#faf7f2',
                             100: '#f0ebe3',
@@ -53,20 +50,28 @@
 <body class="bg-surface-50 text-stone-800 min-h-screen flex flex-col">
 
 <nav th:fragment="navbar" class="bg-primary-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        <a th:href="@{/}" class="text-xl font-bold tracking-tight hover:text-accent-200 transition">ZakaFlow</a>
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
+        <a th:href="@{/user}" class="text-xl font-bold tracking-tight hover:text-accent-200 transition">ZakaFlow</a>
         <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
-            <a th:href="@{/programs}" class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Program</a>
-            <a th:href="@{/categories}" class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Kategori</a>
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}"
-               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Admin</a>
-            <a sec:authorize="hasRole('DONATUR')" th:href="@{/user}"
-               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Dashboard</a>
-            <a sec:authorize="!isAuthenticated()" th:href="@{/login}"
-               class="hover:text-accent-200 bg-accent-500 hover:bg-accent-600 px-3 py-2 mx-1 rounded-lg transition">Masuk</a>
-            <a sec:authorize="!isAuthenticated()" th:href="@{/register}"
-               class="hover:text-accent-200 border border-accent-400 px-3 py-2 rounded-lg transition">Daftar</a>
-            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline ml-1">
+            <a th:href="@{/user}"
+               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
+               th:classappend="${activePage == 'dashboard'} ? 'bg-primary-800 text-accent-200' : ''">Dashboard</a>
+            <a th:href="@{/user/programs}"
+               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
+               th:classappend="${activePage == 'programs'} ? 'bg-primary-800 text-accent-200' : ''">Program</a>
+            <a th:href="@{/user/statistics}"
+               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
+               th:classappend="${activePage == 'statistics'} ? 'bg-primary-800 text-accent-200' : ''">Statistik</a>
+            <a th:href="@{/user/donations}"
+               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
+               th:classappend="${activePage == 'donations'} ? 'bg-primary-800 text-accent-200' : ''">Riwayat Saya</a>
+            <a th:href="@{/user/profile}"
+               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
+               th:classappend="${activePage == 'profile'} ? 'bg-primary-800 text-accent-200' : ''">Profil</a>
+            <span sec:authorize="isAuthenticated()"
+                  class="hidden sm:inline text-white/60 text-xs px-2"
+                  sec:authentication="name">user</span>
+            <form th:action="@{/logout}" method="post" class="inline">
                 <button type="submit"
                         class="hover:text-accent-200 bg-accent-600 hover:bg-accent-500 px-3 py-2 rounded-lg transition">
                     Keluar
@@ -77,8 +82,15 @@
 </nav>
 
 <footer th:fragment="footer" class="bg-surface-50 border-t border-surface-200 py-6 text-center text-sm text-stone-500 mt-auto">
-    &copy; 2026 ZakaFlow — Sistem Informasi Pengelolaan Zakat &amp; Donasi
+    &copy; 2026 ZakaFlow — Portal Donatur
 </footer>
+
+<div th:fragment="alerts">
+    <div th:if="${successMessage}" class="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-100 text-sm font-medium"
+         th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="mb-6 p-4 bg-red-50 text-red-800 rounded-xl border border-red-100 text-sm font-medium"
+         th:text="${errorMessage}"></div>
+</div>
 
 </body>
 </html>

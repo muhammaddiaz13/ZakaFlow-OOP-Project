@@ -17,10 +17,8 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         seedCategory("Zakat", "Kewajiban zakat bagi yang memenuhi syarat");
-        seedCategory("Infaq", "Sedekah sunnah di luar zakat");
+        seedCategory("Infak", "Sedekah sunnah di luar zakat");
         seedCategory("Sedekah", "Bantuan sukarela untuk yang membutuhkan");
-        seedCategory("Wakaf", "Wakaf untuk keperluan sosial dan keagamaan");
-        seedCategory("Fidyah", "Kompensasi bagi yang tidak bisa berpuasa");
 
         if (userService.findByUsername("admin").isEmpty()) {
             userService.register("admin", "admin@zakaflow.local", "admin123", "ADMIN");

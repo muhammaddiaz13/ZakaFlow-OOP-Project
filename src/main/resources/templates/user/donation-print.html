@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Bukti Donasi #' + ${transaction.id} + ' | ZakaFlow'">Bukti Donasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800 p-8" onload="window.print()">
+
+<div class="no-print mb-6 flex gap-3 justify-center">
+    <button onclick="window.print()"
+            class="bg-primary-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary-800">
+        Cetak
+    </button>
+    <button onclick="window.close()"
+            class="border border-stone-300 px-6 py-2 rounded-lg font-semibold hover:bg-white">
+        Tutup
+    </button>
+</div>
+
+<div class="max-w-lg mx-auto bg-white rounded-2xl shadow-lg border border-stone-200 overflow-hidden">
+    <div class="bg-emerald-800 text-white px-8 py-6 text-center">
+        <h1 class="text-2xl font-bold">ZakaFlow</h1>
+        <p class="text-sm text-white/80 mt-1">Bukti Donasi Resmi</p>
+    </div>
+
+    <div class="px-8 py-6 space-y-4 text-sm">
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">No. Transaksi</span>
+            <span class="font-bold" th:text="'#' + ${transaction.id}">#001</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Tanggal</span>
+            <span class="font-medium"
+                  th:text="${#temporals.format(transaction.transactionDate, 'dd MMMM yyyy, HH:mm')}">-</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Donatur</span>
+            <span class="font-medium" th:text="${user.username}">-</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Email</span>
+            <span class="font-medium" th:text="${user.email}">-</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Metode Pembayaran</span>
+            <span class="font-medium" th:text="${transaction.paymentMethod.label}">QRIS</span>
+        </div>
+        <div th:if="${transaction.paymentReference}" class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Referensi</span>
+            <span class="font-medium font-mono" th:text="${transaction.paymentReference}">-</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Program</span>
+            <span class="font-medium text-right max-w-[200px]" th:text="${transaction.program.title}">-</span>
+        </div>
+        <div class="flex justify-between border-b border-stone-100 pb-3">
+            <span class="text-stone-500">Kategori</span>
+            <span class="font-medium" th:text="${transaction.program.category.name}">-</span>
+        </div>
+        <div class="flex justify-between pt-2">
+            <span class="text-stone-500 font-medium">Nominal Donasi</span>
+            <span class="text-xl font-bold text-emerald-800"
+                  th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-stone-500">Status</span>
+            <span class="font-semibold uppercase" th:text="${transaction.status}">SUCCESS</span>
+        </div>
+    </div>
+
+    <div class="bg-stone-50 px-8 py-4 text-center text-xs text-stone-500 border-t">
+        Terima kasih atas kebaikan Anda. — ZakaFlow &copy; 2026
+    </div>
+</div>
+
+</body>
+</html>

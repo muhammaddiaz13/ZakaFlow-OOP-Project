@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="id">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | ZakaFlow Admin'">ZakaFlow Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50:  '#f4f7f2', 100: '#e3ebe0', 200: '#c9d8c4', 300: '#a3b89c',
+                            400: '#7d9a75', 500: '#5f8260', 600: '#4d6b4e', 700: '#3f5840',
+                            800: '#334833', 900: '#2a3b29', 950: '#1a2619',
+                        },
+                        accent: {
+                            50:  '#fdf8f3', 100: '#faeee3', 200: '#f4d9c4', 300: '#e8bc94',
+                            400: '#d9966a', 500: '#c97d4f', 600: '#a8643d', 700: '#8a5032',
+                            800: '#6f4129', 900: '#5a3522',
+                        },
+                        surface: { 50: '#faf7f2', 100: '#f0ebe3', 200: '#e2d9cc' },
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+<nav th:fragment="navbar" class="bg-stone-900 text-white shadow-lg border-b border-stone-800">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center gap-3">
+            <a th:href="@{/admin}" class="text-xl font-bold tracking-tight hover:text-accent-300 transition">ZakaFlow</a>
+            <span class="text-xs font-semibold uppercase tracking-wider bg-accent-600 text-white px-2 py-0.5 rounded">Admin</span>
+        </div>
+        <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
+            <a th:href="@{/admin}" th:classappend="${activePage == 'dashboard'} ? 'bg-stone-800 text-accent-200' : ''"
+               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Dashboard</a>
+            <a th:href="@{/admin/programs}" th:classappend="${activePage == 'programs'} ? 'bg-stone-800 text-accent-200' : ''"
+               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Program</a>
+            <a th:href="@{/admin/categories}" th:classappend="${activePage == 'categories'} ? 'bg-stone-800 text-accent-200' : ''"
+               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Kategori</a>
+            <a th:href="@{/admin/transactions}" th:classappend="${activePage == 'transactions'} ? 'bg-stone-800 text-accent-200' : ''"
+               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Transaksi</a>
+            <a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? 'bg-stone-800 text-accent-200' : ''"
+               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Pengguna</a>
+            <a th:href="@{/}" class="hover:text-accent-200 text-stone-400 hover:bg-stone-800 px-3 py-2 rounded-lg transition text-xs">Situs</a>
+            <form th:action="@{/logout}" method="post" class="inline ml-1">
+                <button type="submit" class="bg-accent-600 hover:bg-accent-500 px-3 py-2 rounded-lg transition">Keluar</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="bg-stone-100 border-t border-stone-200 py-5 text-center text-sm text-stone-500 mt-auto">
+    &copy; 2026 ZakaFlow — Panel Administrator
+</footer>
+
+<div th:fragment="alerts">
+    <div th:if="${successMessage}" class="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-100 text-sm font-medium"
+         th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="mb-6 p-4 bg-red-50 text-red-800 rounded-xl border border-red-100 text-sm font-medium"
+         th:text="${errorMessage}"></div>
+</div>
+
+</body>
+</html>
