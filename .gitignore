@@ -34,3 +34,6 @@ build/
 
 # Amankan kredensial database lokal
 src/main/resources/application.properties
+
+# Amankan kredensial database supabase
+jalan.sh
