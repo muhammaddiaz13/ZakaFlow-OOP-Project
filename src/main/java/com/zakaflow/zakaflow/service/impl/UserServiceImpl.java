@@ -1,6 +1,8 @@
 package com.zakaflow.zakaflow.service.impl;
 
+import com.zakaflow.zakaflow.model.Role;
 import com.zakaflow.zakaflow.model.User;
+import com.zakaflow.zakaflow.repository.RoleRepository;
 import com.zakaflow.zakaflow.repository.UserRepository;
 import com.zakaflow.zakaflow.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -54,7 +57,14 @@ public class UserServiceImpl implements UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setRole(roleName != null && !roleName.isBlank() ? roleName : "DONATUR");
+        String resolvedRoleName =
+                (roleName != null && !roleName.isBlank()) ? roleName.trim().toUpperCase() : "DONATUR";
+        user.setRole(resolvedRoleName);
+
+        Role roleEntity = roleRepository.findByName(resolvedRoleName)
+                .orElseGet(() -> roleRepository.save(new Role(null, resolvedRoleName)));
+        user.setRoleEntity(roleEntity);
+
         return userRepository.save(user);
     }
 
