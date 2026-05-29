@@ -11,7 +11,6 @@
         &larr; Kembali ke daftar program
     </a>
 
-<<<<<<< HEAD
     <article class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div th:if="${program.imagePath != null}" class="h-56 md:h-72 overflow-hidden bg-slate-100">
             <img th:src="@{'/uploads/' + ${program.imagePath}}" th:alt="${program.title}"
@@ -19,14 +18,6 @@
         </div>
         <div class="p-8">
         <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded"
-=======
-    <article class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
-        <div th:if="${program.imageFilename != null}" class="w-full h-64 overflow-hidden rounded-lg">
-            <img th:src="@{'/uploads/programs/thumbnails/' + ${program.imageFilename}}" alt="thumbnail" class="w-full h-64 object-cover"/>
-        </div>
-
-        <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded mt-4 inline-block"
->>>>>>> d15ec4ecb96c48474c8d6caf7007068a4002d800
               th:text="${program.category.name}">Kategori</span>
 
         <div class="flex items-start justify-between gap-4">

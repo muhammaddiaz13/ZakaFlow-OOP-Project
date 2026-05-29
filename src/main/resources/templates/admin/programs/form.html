@@ -12,13 +12,8 @@
 
     <div th:replace="~{layout/admin :: alerts}"></div>
 
-<<<<<<< HEAD
     <form th:action="@{/admin/programs/save}" method="post" enctype="multipart/form-data"
           class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 space-y-5">
-=======
-        <form th:action="@{/admin/programs/save}" method="post" enctype="multipart/form-data"
-            class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 space-y-5">
->>>>>>> d15ec4ecb96c48474c8d6caf7007068a4002d800
         <input type="hidden" name="id" th:if="${isEdit}" th:value="${program.id}"/>
 
         <div>

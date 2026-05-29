@@ -2,16 +2,11 @@ package com.zakaflow.zakaflow.config;
 
 import com.zakaflow.zakaflow.config.BankAccount;
 import com.zakaflow.zakaflow.model.Category;
-<<<<<<< HEAD
 import com.zakaflow.zakaflow.model.PaymentChannel;
 import com.zakaflow.zakaflow.model.PaymentMethod;
 import com.zakaflow.zakaflow.model.Role;
 import com.zakaflow.zakaflow.repository.CategoryRepository;
 import com.zakaflow.zakaflow.repository.PaymentMethodRepository;
-=======
-import com.zakaflow.zakaflow.model.Role;
-import com.zakaflow.zakaflow.repository.CategoryRepository;
->>>>>>> origin
 import com.zakaflow.zakaflow.service.RoleService;
 import com.zakaflow.zakaflow.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PaymentProperties paymentProperties;
     private final RoleService roleService;
     private final UserService userService;
-    private final RoleService roleService;
+    // private final RoleService roleService;
 
     @Override
     public void run(String... args) {
@@ -37,10 +32,7 @@ public class DataInitializer implements CommandLineRunner {
 
         seedRole("ADMIN");
         seedRole("DONATUR");
-<<<<<<< HEAD
         seedPaymentMethods();
-=======
->>>>>>> origin
 
         if (userService.findByUsername("admin").isEmpty()) {
             userService.register("admin", "admin@zakaflow.local", "admin123", "ADMIN");
@@ -62,7 +54,6 @@ public class DataInitializer implements CommandLineRunner {
             roleService.save(new Role(null, normalized));
         }
     }
-<<<<<<< HEAD
 
     private void seedPaymentMethods() {
         if (paymentMethodRepository.count() > 0) {
@@ -78,6 +69,4 @@ public class DataInitializer implements CommandLineRunner {
             paymentMethodRepository.save(method);
         }
     }
-=======
->>>>>>> origin
 }

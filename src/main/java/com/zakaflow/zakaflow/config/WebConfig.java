@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+// @Configuration - Duplicate configuration removed. Using WebMvcConfig.java instead.
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${app.upload.dir:uploads}")
+    @Value("${zakaflow.upload.dir:uploads}")
     private String uploadDir;
 
     @Override
