@@ -34,7 +34,3 @@ build/
 
 # Amankan kredensial database lokal
 src/main/resources/application.properties
-
-# File upload program (simpan lokal, jangan di-commit)
-uploads/*
-!uploads/.gitkeep

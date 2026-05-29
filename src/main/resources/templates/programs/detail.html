@@ -53,6 +53,64 @@
                 <h2 class="text-lg font-semibold text-stone-900 mb-4">Form Donasi</h2>
                 <form th:action="@{/user/donate}" method="post" class="space-y-5">
                     <input type="hidden" name="programId" th:value="${program.id}"/>
+
+                    <!-- Kalkulator zakat hanya untuk program kategori Zakat -->
+                    <section th:if="${program.category != null and program.category.name != null and #strings.equalsIgnoreCase(program.category.name, 'Zakat')}"
+                             class="bg-white rounded-2xl border border-surface-200 shadow-sm p-6">
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-stone-900">Kalkulator Zakat Penghasilan</h3>
+                                <p class="text-sm text-stone-600 mt-1">
+                                    Nisab bulanan:
+                                    <span class="font-semibold text-primary-800"
+                                          th:text="'Rp ' + ${#numbers.formatDecimal(zakatNisabBulanan, 0, 'COMMA', 0, 'POINT')}">Rp 6.850.000</span>
+                                </p>
+                            </div>
+                            <span class="text-[10px] uppercase tracking-wide text-stone-400 font-semibold mt-1">2,5%</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="zakatGaji" class="block text-sm font-medium text-stone-700 mb-1">Gaji Pokok Bulanan</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">Rp</span>
+                                    <input id="zakatGaji" inputmode="numeric" autocomplete="off" placeholder="Contoh: 7000000"
+                                           class="w-full pl-10 pr-4 py-2.5 border border-surface-200 rounded-lg focus:ring-2 focus:ring-primary-600 outline-none"/>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="zakatBonus" class="block text-sm font-medium text-stone-700 mb-1">Penghasilan Lainnya/Bonus</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500 text-sm">Rp</span>
+                                    <input id="zakatBonus" inputmode="numeric" autocomplete="off" placeholder="Opsional"
+                                           class="w-full pl-10 pr-4 py-2.5 border border-surface-200 rounded-lg focus:ring-2 focus:ring-primary-600 outline-none"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="bg-surface-50 border border-surface-200 rounded-xl p-4">
+                                <p class="text-xs text-stone-500 uppercase font-semibold">Total Penghasilan</p>
+                                <p id="zakatTotal" class="text-lg font-bold text-stone-900 mt-1">Rp 0</p>
+                            </div>
+                            <div class="bg-surface-50 border border-surface-200 rounded-xl p-4">
+                                <p class="text-xs text-stone-500 uppercase font-semibold">Status</p>
+                                <p id="zakatStatus" class="text-lg font-bold text-stone-900 mt-1">—</p>
+                            </div>
+                            <div class="bg-primary-50 border border-primary-100 rounded-xl p-4">
+                                <p class="text-xs text-primary-800 uppercase font-semibold">Zakat yang Dibayar</p>
+                                <p id="zakatJumlah" class="text-lg font-black text-primary-900 mt-1">Rp 0</p>
+                            </div>
+                        </div>
+
+                        <p id="zakatEdu" class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 hidden">
+                            Penghasilan Anda belum mencapai nisab zakat.
+                        </p>
+                        <p class="text-xs text-stone-500 mt-3 leading-relaxed">
+                            Nominal donasi untuk program zakat akan mengikuti hasil perhitungan zakat penghasilan (2,5% dari total penghasilan jika memenuhi nisab).
+                        </p>
+                    </section>
+
                     <div>
                         <label for="amount" class="block text-sm font-medium text-stone-700 mb-1">Nominal Donasi (Rp)</label>
                         <input type="number" id="amount" name="amount" required min="1000" step="1000"
@@ -112,6 +170,7 @@
                         });
                     </script>
                     <button type="submit"
+                            id="btnSubmitDonation"
                             class="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-lg transition">
                         Lanjut ke Pembayaran
                     </button>
@@ -133,5 +192,85 @@
 </main>
 
 <footer th:replace="~{layout/main :: footer}"></footer>
+
+<script th:inline="javascript">
+    (function () {
+        const isZakatProgram = /*[[${program.category != null and program.category.name != null and #strings.equalsIgnoreCase(program.category.name, 'Zakat')}]]*/ false;
+        if (!isZakatProgram) return;
+
+        const nisab = Number(/*[[${zakatNisabBulanan}]]*/ 6850000);
+        const tarif = Number(/*[[${zakatTarif}]]*/ 0.025);
+
+        const elGaji = document.getElementById('zakatGaji');
+        const elBonus = document.getElementById('zakatBonus');
+        const elEdu = document.getElementById('zakatEdu');
+
+        const elTotal = document.getElementById('zakatTotal');
+        const elStatus = document.getElementById('zakatStatus');
+        const elJumlah = document.getElementById('zakatJumlah');
+
+        const elAmount = document.getElementById('amount');
+        const elSubmit = document.getElementById('btnSubmitDonation');
+
+        const rupiah = new Intl.NumberFormat('id-ID');
+
+        function toNumber(input) {
+            const raw = String(input ?? '').replace(/[^\d]/g, '');
+            return raw ? Number(raw) : 0;
+        }
+
+        function formatLive(el) {
+            const n = toNumber(el.value);
+            el.value = n ? rupiah.format(n) : '';
+            return n;
+        }
+
+        function setSubmitEnabled(enabled) {
+            if (!elSubmit) return;
+            elSubmit.disabled = !enabled;
+            elSubmit.classList.toggle('opacity-60', !enabled);
+            elSubmit.classList.toggle('cursor-not-allowed', !enabled);
+        }
+
+        function render() {
+            const gaji = formatLive(elGaji);
+            const bonus = formatLive(elBonus);
+            const total = gaji + bonus;
+
+            elTotal.textContent = 'Rp ' + rupiah.format(total);
+
+            if (total >= nisab && total > 0) {
+                const zakat = Math.round(total * tarif);
+                elStatus.textContent = 'wajib zakat';
+                elStatus.className = 'text-lg font-bold mt-1 text-primary-800';
+                elJumlah.textContent = 'Rp ' + rupiah.format(zakat);
+                elEdu.classList.add('hidden');
+
+                // Set nominal donasi mengikuti zakat (angka mentah, tanpa format)
+                elAmount.value = String(zakat);
+                elAmount.readOnly = true;
+                setSubmitEnabled(zakat >= 1000);
+            } else {
+                elStatus.textContent = 'tidak wajib';
+                elStatus.className = 'text-lg font-bold mt-1 text-stone-900';
+                elJumlah.textContent = 'Rp 0';
+                elAmount.value = '';
+                elAmount.readOnly = true;
+                setSubmitEnabled(false);
+                elEdu.classList.toggle('hidden', total === 0);
+            }
+        }
+
+        ['input', 'blur'].forEach(evt => {
+            elGaji.addEventListener(evt, render);
+            elBonus.addEventListener(evt, render);
+        });
+
+        // Init: lock amount for zakat program
+        elAmount.readOnly = true;
+        setSubmitEnabled(false);
+        render();
+    })();
+</script>
 </body>
 </html>

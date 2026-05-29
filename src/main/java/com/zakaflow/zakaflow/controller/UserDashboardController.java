@@ -44,7 +44,6 @@ public class UserDashboardController {
         BigDecimal totalDonated = sumSuccessful(transactions);
         List<DonationTransaction> recent = sortByDateDesc(transactions).stream().limit(5).toList();
 
-        addChartAttributes(transactions, model);
         model.addAttribute("user", user);
         model.addAttribute("totalDonated", totalDonated);
         model.addAttribute("donationCount", transactions.size());
@@ -129,7 +128,10 @@ public class UserDashboardController {
 
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal UserDetails principal, Model model) {
-        model.addAttribute("user", resolveUser(principal));
+        User user = resolveUser(principal);
+        List<DonationTransaction> transactions = donationTransactionService.findByUserId(user.getId());
+        addChartAttributes(transactions, model);
+        model.addAttribute("user", user);
         return "user/profile";
     }
 

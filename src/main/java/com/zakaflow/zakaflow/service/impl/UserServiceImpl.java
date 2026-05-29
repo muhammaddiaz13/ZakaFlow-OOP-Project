@@ -64,8 +64,19 @@ public class UserServiceImpl implements UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(rawPassword));
+<<<<<<< HEAD
         user.setRole(resolvedRoleName);
         user.setRoleEntity(roleEntity);
+=======
+        String resolvedRoleName =
+                (roleName != null && !roleName.isBlank()) ? roleName.trim().toUpperCase() : "DONATUR";
+        user.setRole(resolvedRoleName);
+
+        Role roleEntity = roleRepository.findByName(resolvedRoleName)
+                .orElseGet(() -> roleRepository.save(new Role(null, resolvedRoleName)));
+        user.setRoleEntity(roleEntity);
+
+>>>>>>> origin
         return userRepository.save(user);
     }
 
