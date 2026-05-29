@@ -28,8 +28,14 @@ public class DonationTransaction {
     private TransactionStatus status = TransactionStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private PaymentMethod paymentMethod = PaymentMethod.TRANSFER_BANK;
+    @Column(name = "payment_method", nullable = false, length = 30)
+    private PaymentChannel paymentChannel = PaymentChannel.TRANSFER_BANK;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PaymentMethod paymentMethod;
 
     @Column(length = 100)
     private String paymentReference;

@@ -31,7 +31,11 @@
             </div>
             <div class="py-4 flex justify-between gap-4">
                 <dt class="text-sm text-stone-500">Metode Pembayaran</dt>
-                <dd class="text-sm font-semibold" th:text="${transaction.paymentMethod.label}">QRIS</dd>
+                <dd class="text-sm font-semibold">
+                    <span th:text="${transaction.paymentChannel.label}">QRIS</span>
+                    <span th:if="${transaction.paymentMethod != null}" class="block text-xs text-stone-500 font-normal"
+                          th:text="${transaction.paymentMethod.name} + ' — ' + ${transaction.paymentMethod.accountNumber}">BCA</span>
+                </dd>
             </div>
             <div th:if="${transaction.paymentReference}" class="py-4 flex justify-between gap-4">
                 <dt class="text-sm text-stone-500">Referensi</dt>

@@ -1,6 +1,8 @@
 package com.zakaflow.zakaflow.service.impl;
 
+import com.zakaflow.zakaflow.model.Role;
 import com.zakaflow.zakaflow.model.User;
+import com.zakaflow.zakaflow.repository.RoleRepository;
 import com.zakaflow.zakaflow.repository.UserRepository;
 import com.zakaflow.zakaflow.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -50,11 +53,19 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email sudah digunakan");
         }
 
+        String resolvedRoleName =
+                (roleName != null && !roleName.isBlank()) ? roleName.trim().toUpperCase() : "DONATUR";
+
+        Role roleEntity = roleRepository.findByName(resolvedRoleName)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Role '" + resolvedRoleName + "' belum ada di database. Hubungi administrator."));
+
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setRole(roleName != null && !roleName.isBlank() ? roleName : "DONATUR");
+        user.setRole(resolvedRoleName);
+        user.setRoleEntity(roleEntity);
         return userRepository.save(user);
     }
 

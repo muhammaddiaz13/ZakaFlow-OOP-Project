@@ -2,7 +2,9 @@ package com.zakaflow.zakaflow.service.impl;
 
 import com.zakaflow.zakaflow.model.DonationProgram;
 import com.zakaflow.zakaflow.model.DonationTransaction;
+import com.zakaflow.zakaflow.model.PaymentChannel;
 import com.zakaflow.zakaflow.model.PaymentMethod;
+import com.zakaflow.zakaflow.repository.PaymentMethodRepository;
 import com.zakaflow.zakaflow.model.TransactionStatus;
 import com.zakaflow.zakaflow.model.User;
 import com.zakaflow.zakaflow.repository.DonationProgramRepository;
@@ -25,6 +27,7 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
     private final DonationTransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final DonationProgramRepository programRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
     @Override
     public List<DonationTransaction> findAll() {
@@ -43,7 +46,8 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
 
     @Override
     @Transactional
-    public DonationTransaction create(Long userId, Long programId, BigDecimal amount, PaymentMethod paymentMethod) {
+    public DonationTransaction create(Long userId, Long programId, BigDecimal amount,
+                                      PaymentChannel paymentChannel, Long paymentMethodId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
         DonationProgram program = programRepository.findById(programId)
@@ -52,14 +56,25 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
         if (program.isCompleted()) {
             throw new IllegalStateException("Program donasi sudah selesai");
         }
-        if (paymentMethod == null) {
+        if (paymentChannel == null) {
             throw new IllegalArgumentException("Metode pembayaran wajib dipilih");
+        }
+
+        PaymentMethod paymentMethod = null;
+        if (paymentChannel == PaymentChannel.TRANSFER_BANK) {
+            if (paymentMethodId == null) {
+                throw new IllegalArgumentException("Pilih rekening tujuan transfer bank.");
+            }
+            paymentMethod = paymentMethodRepository.findById(paymentMethodId)
+                    .filter(pm -> pm.isActive() && pm.getChannel() == PaymentChannel.TRANSFER_BANK)
+                    .orElseThrow(() -> new IllegalArgumentException("Rekening pembayaran tidak valid."));
         }
 
         DonationTransaction transaction = new DonationTransaction();
         transaction.setUser(user);
         transaction.setProgram(program);
         transaction.setAmount(amount);
+        transaction.setPaymentChannel(paymentChannel);
         transaction.setPaymentMethod(paymentMethod);
         transaction.setStatus(TransactionStatus.PENDING);
 
@@ -128,5 +143,15 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
     @Transactional
     public void deleteById(Long id) {
         transactionRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void resetAllDonations() {
+        transactionRepository.deleteAll();
+        programRepository.findAll().forEach(program -> {
+            program.setCurrentAmount(BigDecimal.ZERO);
+            program.setCompleted(false);
+        });
     }
 }

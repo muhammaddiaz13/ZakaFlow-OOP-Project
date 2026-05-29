@@ -11,7 +11,12 @@
         &larr; Kembali ke daftar program
     </a>
 
-    <article class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+    <article class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div th:if="${program.imagePath != null}" class="h-56 md:h-72 overflow-hidden bg-slate-100">
+            <img th:src="@{'/uploads/' + ${program.imagePath}}" th:alt="${program.title}"
+                 class="w-full h-full object-cover"/>
+        </div>
+        <div class="p-8">
         <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded"
               th:text="${program.category.name}">Kategori</span>
 
@@ -57,20 +62,55 @@
                     <div>
                         <p class="block text-sm font-medium text-stone-700 mb-3">Metode Pembayaran</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <label th:each="pm : ${paymentMethods}"
-                                   class="flex items-center gap-3 p-4 border-2 border-surface-200 rounded-xl cursor-pointer hover:border-primary-400 transition">
-                                <input type="radio" name="paymentMethod" th:value="${pm.name()}" required
-                                       class="text-primary-600 focus:ring-primary-600" th:checked="${pm.name() == 'QRIS'}"/>
-                                <span class="text-xl" th:switch="${pm.name()}">
+                            <label th:each="ch : ${paymentChannels}"
+                                   class="flex items-center gap-3 p-4 border-2 border-surface-200 rounded-xl cursor-pointer hover:border-primary-400 transition payment-channel-option">
+                                <input type="radio" name="paymentMethod" th:value="${ch.name()}" required
+                                       class="text-primary-600 focus:ring-primary-600 payment-channel-radio"
+                                       th:checked="${ch.name() == 'QRIS'}"/>
+                                <span class="text-xl" th:switch="${ch.name()}">
                                     <span th:case="'QRIS'">📱</span>
                                     <span th:case="'TRANSFER_BANK'">🏦</span>
                                     <span th:case="'E_WALLET'">💳</span>
                                     <span th:case="*">💵</span>
                                 </span>
-                                <span class="text-sm font-semibold text-stone-800" th:text="${pm.label}">Metode</span>
+                                <span class="text-sm font-semibold text-stone-800" th:text="${ch.label}">Metode</span>
                             </label>
                         </div>
                     </div>
+                    <div id="bank-account-section" class="hidden">
+                        <p class="block text-sm font-medium text-stone-700 mb-3">Rekening Tujuan Transfer</p>
+                        <div class="space-y-2">
+                            <label th:each="bank : ${bankAccounts}"
+                                   class="flex items-start gap-3 p-4 border border-surface-200 rounded-xl cursor-pointer hover:border-primary-400 transition">
+                                <input type="radio" name="paymentMethodId" th:value="${bank.id}"
+                                       class="mt-1 text-primary-600 focus:ring-primary-600"/>
+                                <span>
+                                    <span class="block text-sm font-semibold text-stone-900" th:text="${bank.name}">BCA</span>
+                                    <span class="block text-xs text-stone-500 font-mono" th:text="${bank.accountNumber}">123</span>
+                                    <span class="block text-xs text-stone-500" th:text="'a.n. ' + ${bank.accountHolder}">ZakaFlow</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const bankSection = document.getElementById('bank-account-section');
+                            const radios = document.querySelectorAll('.payment-channel-radio');
+                            function toggleBankSection() {
+                                const selected = document.querySelector('.payment-channel-radio:checked');
+                                const isTransfer = selected && selected.value === 'TRANSFER_BANK';
+                                bankSection.classList.toggle('hidden', !isTransfer);
+                                bankSection.querySelectorAll('input[name="paymentMethodId"]').forEach(function (input) {
+                                    input.required = isTransfer;
+                                    if (!isTransfer) input.checked = false;
+                                });
+                            }
+                            radios.forEach(function (radio) {
+                                radio.addEventListener('change', toggleBankSection);
+                            });
+                            toggleBankSection();
+                        });
+                    </script>
                     <button type="submit"
                             class="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-lg transition">
                         Lanjut ke Pembayaran
@@ -87,6 +127,7 @@
             <div sec:authorize="hasRole('ADMIN')" class="text-center p-4 bg-amber-50 text-amber-800 rounded-lg text-sm border border-amber-100">
                 Anda login sebagai admin. Gunakan akun donatur untuk melakukan donasi.
             </div>
+        </div>
         </div>
     </article>
 </main>

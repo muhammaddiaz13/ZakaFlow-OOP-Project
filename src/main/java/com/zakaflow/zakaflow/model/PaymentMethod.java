@@ -1,18 +1,32 @@
 package com.zakaflow.zakaflow.model;
 
-public enum PaymentMethod {
-    QRIS("QRIS"),
-    TRANSFER_BANK("Transfer Bank (Semua Bank)"),
-    E_WALLET("E-Wallet"),
-    CASH("Tunai");
+import jakarta.persistence.*;
+import lombok.*;
 
-    private final String label;
+@Entity
+@Table(name = "payment_methods")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PaymentMethod {
 
-    PaymentMethod(String label) {
-        this.label = label;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String getLabel() {
-        return label;
-    }
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "account_number", nullable = false, length = 50)
+    private String accountNumber;
+
+    @Column(name = "account_holder", nullable = false, length = 150)
+    private String accountHolder;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private PaymentChannel channel = PaymentChannel.TRANSFER_BANK;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }

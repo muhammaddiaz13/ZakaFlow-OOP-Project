@@ -2,7 +2,7 @@ package com.zakaflow.zakaflow.controller;
 
 import com.zakaflow.zakaflow.config.PaymentProperties;
 import com.zakaflow.zakaflow.model.DonationTransaction;
-import com.zakaflow.zakaflow.model.PaymentMethod;
+import com.zakaflow.zakaflow.model.PaymentChannel;
 import com.zakaflow.zakaflow.model.TransactionStatus;
 import com.zakaflow.zakaflow.model.User;
 import com.zakaflow.zakaflow.service.DonationProgramService;
@@ -189,6 +189,7 @@ public class UserDashboardController {
             @RequestParam Long programId,
             @RequestParam BigDecimal amount,
             @RequestParam String paymentMethod,
+            @RequestParam(required = false) Long paymentMethodId,
             RedirectAttributes redirectAttributes) {
         User user = resolveUser(principal);
 
@@ -198,9 +199,9 @@ public class UserDashboardController {
         }
 
         try {
-            PaymentMethod method = PaymentMethod.valueOf(paymentMethod);
+            PaymentChannel channel = PaymentChannel.valueOf(paymentMethod);
             DonationTransaction transaction = donationTransactionService.create(
-                    user.getId(), programId, amount, method);
+                    user.getId(), programId, amount, channel, paymentMethodId);
             return "redirect:/user/payment/" + transaction.getId();
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

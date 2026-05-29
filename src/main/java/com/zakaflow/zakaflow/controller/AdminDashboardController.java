@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -52,5 +54,13 @@ public class AdminDashboardController {
         model.addAttribute("totalCollected", totalCollected);
         model.addAttribute("recentTransactions", recent);
         return "admin/dashboard";
+    }
+
+    @PostMapping("/reset-donations")
+    public String resetDonations(RedirectAttributes redirectAttributes) {
+        donationTransactionService.resetAllDonations();
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Semua transaksi donasi telah dihapus dan total terkumpul program direset ke Rp 0.");
+        return "redirect:/admin";
     }
 }

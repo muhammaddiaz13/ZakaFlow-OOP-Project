@@ -1,7 +1,8 @@
 package com.zakaflow.zakaflow.controller;
 
-import com.zakaflow.zakaflow.model.PaymentMethod;
+import com.zakaflow.zakaflow.model.PaymentChannel;
 import com.zakaflow.zakaflow.service.DonationProgramService;
+import com.zakaflow.zakaflow.service.PaymentMethodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DonationProgramController {
 
     private final DonationProgramService donationProgramService;
+    private final PaymentMethodService paymentMethodService;
 
     @GetMapping
     public String list(Model model) {
@@ -26,7 +28,8 @@ public class DonationProgramController {
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("program", donationProgramService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Program tidak ditemukan")));
-        model.addAttribute("paymentMethods", PaymentMethod.values());
+        model.addAttribute("paymentChannels", PaymentChannel.values());
+        model.addAttribute("bankAccounts", paymentMethodService.findActiveByChannel(PaymentChannel.TRANSFER_BANK));
         return "programs/detail";
     }
 }

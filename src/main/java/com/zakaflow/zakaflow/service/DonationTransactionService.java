@@ -1,7 +1,7 @@
 package com.zakaflow.zakaflow.service;
 
 import com.zakaflow.zakaflow.model.DonationTransaction;
-import com.zakaflow.zakaflow.model.PaymentMethod;
+import com.zakaflow.zakaflow.model.PaymentChannel;
 import com.zakaflow.zakaflow.model.TransactionStatus;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public interface DonationTransactionService {
 
     List<DonationTransaction> findByUserId(Long userId);
 
-    DonationTransaction create(Long userId, Long programId, BigDecimal amount, PaymentMethod paymentMethod);
+    DonationTransaction create(Long userId, Long programId, BigDecimal amount, PaymentChannel paymentChannel, Long paymentMethodId);
 
     DonationTransaction confirmPayment(Long transactionId, Long userId, String paymentReference);
 
@@ -25,4 +25,7 @@ public interface DonationTransactionService {
     DonationTransaction updateStatus(Long id, TransactionStatus status);
 
     void deleteById(Long id);
+
+    /** Menghapus semua transaksi dan mereset currentAmount program ke nol. */
+    void resetAllDonations();
 }

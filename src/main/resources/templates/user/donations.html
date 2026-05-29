@@ -78,7 +78,10 @@
                 <td class="px-6 py-4 text-stone-600"
                     th:text="${#temporals.format(t.transactionDate, 'dd MMM yyyy HH:mm')}">Tanggal</td>
                 <td class="px-6 py-4 font-medium" th:text="${t.program.title}">Program</td>
-                <td class="px-6 py-4 text-stone-600" th:text="${t.paymentMethod.label}">QRIS</td>
+                <td class="px-6 py-4 text-stone-600">
+                    <span th:text="${t.paymentChannel.label}">QRIS</span>
+                    <span th:if="${t.paymentMethod != null}" class="block text-xs text-stone-400" th:text="${t.paymentMethod.name}">BCA</span>
+                </td>
                 <td class="px-6 py-4 text-right font-medium text-primary-700"
                     th:text="'Rp ' + ${#numbers.formatDecimal(t.amount, 0, 'COMMA', 0, 'POINT')}">0</td>
                 <td class="px-6 py-4 text-center">

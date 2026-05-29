@@ -33,6 +33,9 @@ public class DonationProgram {
     @Column(nullable = false)
     private boolean isCompleted = false;
 
+    @Column(name = "image_path", length = 255)
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     @ToString.Exclude

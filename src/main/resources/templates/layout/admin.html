@@ -59,6 +59,38 @@
     &copy; 2026 ZakaFlow — Panel Administrator
 </footer>
 
+<th:block th:fragment="confirmScripts">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('form.js-confirm-submit').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const title = form.dataset.confirmTitle || 'Konfirmasi';
+                    const text = form.dataset.confirmText || 'Yakin ingin melanjutkan?';
+                    const confirmButton = form.dataset.confirmButton || 'Ya, Hapus';
+
+                    Swal.fire({
+                        title: title,
+                        html: text,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: confirmButton,
+                        cancelButtonText: 'Batal',
+                        focusCancel: true
+                    }).then(function (result) {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</th:block>
+
 <div th:fragment="alerts">
     <div th:if="${successMessage}" class="mb-6 p-4 bg-green-50 text-green-800 rounded-xl border border-green-100 text-sm font-medium"
          th:text="${successMessage}"></div>

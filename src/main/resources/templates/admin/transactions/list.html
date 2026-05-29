@@ -36,7 +36,9 @@
                 <td class="px-5 py-4 font-medium" th:text="${t.user.username}">-</td>
                 <td class="px-5 py-4" th:text="${t.program.title}">-</td>
                 <td class="px-5 py-4 text-stone-600">
-                    <span th:text="${t.paymentMethod.label}">QRIS</span>
+                    <span th:text="${t.paymentChannel.label}">QRIS</span>
+                    <span th:if="${t.paymentMethod != null}" class="block text-xs text-stone-400"
+                          th:text="${t.paymentMethod.name} + ' · ' + ${t.paymentMethod.accountNumber}">BCA</span>
                     <span th:if="${t.paymentReference}" class="block text-xs text-stone-400 font-mono"
                           th:text="${t.paymentReference}">ref</span>
                 </td>

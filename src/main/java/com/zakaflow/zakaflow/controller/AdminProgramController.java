@@ -4,10 +4,12 @@ import com.zakaflow.zakaflow.model.Category;
 import com.zakaflow.zakaflow.model.DonationProgram;
 import com.zakaflow.zakaflow.service.CategoryService;
 import com.zakaflow.zakaflow.service.DonationProgramService;
+import com.zakaflow.zakaflow.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -19,6 +21,7 @@ public class AdminProgramController {
 
     private final DonationProgramService donationProgramService;
     private final CategoryService categoryService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping
     public String list(Model model) {
@@ -51,6 +54,8 @@ public class AdminProgramController {
             @RequestParam String description,
             @RequestParam BigDecimal targetAmount,
             @RequestParam Long categoryId,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "removeImage", defaultValue = "false") boolean removeImage,
             RedirectAttributes redirectAttributes) {
         if (title.isBlank()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Judul program wajib diisi.");
@@ -78,6 +83,23 @@ public class AdminProgramController {
         program.setTargetAmount(targetAmount);
         program.setCategory(category);
 
+        try {
+            if (removeImage) {
+                fileStorageService.deleteIfExists(program.getImagePath());
+                program.setImagePath(null);
+            }
+            if (image != null && !image.isEmpty()) {
+                String storedName = fileStorageService.storeProgramImage(image);
+                if (storedName != null) {
+                    fileStorageService.deleteIfExists(program.getImagePath());
+                    program.setImagePath(storedName);
+                }
+            }
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
+        }
+
         donationProgramService.save(program);
         redirectAttributes.addFlashAttribute("successMessage", "Program berhasil disimpan.");
         return "redirect:/admin/programs";
@@ -86,6 +108,7 @@ public class AdminProgramController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            donationProgramService.findById(id).ifPresent(p -> fileStorageService.deleteIfExists(p.getImagePath()));
             donationProgramService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Program berhasil dihapus.");
         } catch (Exception ex) {

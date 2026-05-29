@@ -37,8 +37,16 @@
             <tbody>
             <tr th:each="p : ${programs}" class="border-b border-stone-100 hover:bg-stone-50/50">
                 <td class="px-5 py-4">
-                    <p class="font-medium text-stone-900" th:text="${p.title}">Judul</p>
-                    <p class="text-xs text-stone-500 line-clamp-1 mt-0.5" th:text="${p.description}">Deskripsi</p>
+                    <div class="flex items-center gap-3">
+                        <img th:if="${p.imagePath != null}" th:src="@{'/uploads/' + ${p.imagePath}}"
+                             alt="" class="w-12 h-12 rounded-lg object-cover border border-stone-200 shrink-0"/>
+                        <div th:unless="${p.imagePath != null}"
+                             class="w-12 h-12 rounded-lg bg-primary-100 text-primary-700 text-xs flex items-center justify-center shrink-0 font-semibold">IMG</div>
+                        <div>
+                            <p class="font-medium text-stone-900" th:text="${p.title}">Judul</p>
+                            <p class="text-xs text-stone-500 line-clamp-1 mt-0.5" th:text="${p.description}">Deskripsi</p>
+                        </div>
+                    </div>
                 </td>
                 <td class="px-5 py-4" th:text="${p.category.name}">Kategori</td>
                 <td class="px-5 py-4 text-right text-stone-700">
@@ -53,8 +61,10 @@
                 <td class="px-5 py-4 text-center">
                     <a th:href="@{/admin/programs/{id}/edit(id=${p.id})}"
                        class="text-primary-700 hover:text-primary-900 font-medium mr-3">Edit</a>
-                    <form th:action="@{/admin/programs/{id}/delete(id=${p.id})}" method="post" class="inline"
-                          onsubmit="return confirm('Hapus program ini?');">
+                    <form th:action="@{/admin/programs/{id}/delete(id=${p.id})}" method="post" class="inline js-confirm-submit"
+                          th:attr="data-confirm-title='Hapus Program Donasi?',
+                                   data-confirm-text=|Program &quot;${p.title}&quot; akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.|,
+                                   data-confirm-button='Ya, Hapus'">
                         <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Hapus</button>
                     </form>
                 </td>
@@ -65,5 +75,6 @@
 </main>
 
 <footer th:replace="~{layout/admin :: footer}"></footer>
+<div th:replace="~{layout/admin :: confirmScripts}"></div>
 </body>
 </html>

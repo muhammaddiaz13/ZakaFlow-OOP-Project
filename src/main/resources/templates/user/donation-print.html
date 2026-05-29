@@ -50,7 +50,7 @@
         </div>
         <div class="flex justify-between border-b border-stone-100 pb-3">
             <span class="text-stone-500">Metode Pembayaran</span>
-            <span class="font-medium" th:text="${transaction.paymentMethod.label}">QRIS</span>
+            <span class="font-medium" th:text="${transaction.paymentChannel.label}">QRIS</span>
         </div>
         <div th:if="${transaction.paymentReference}" class="flex justify-between border-b border-stone-100 pb-3">
             <span class="text-stone-500">Referensi</span>
