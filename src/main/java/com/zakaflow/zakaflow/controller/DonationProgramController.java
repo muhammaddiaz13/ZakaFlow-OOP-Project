@@ -2,8 +2,6 @@ package com.zakaflow.zakaflow.controller;
 
 import com.zakaflow.zakaflow.config.ZakatProperties;
 import com.zakaflow.zakaflow.model.PaymentChannel;
-import com.zakaflow.zakaflow.model.PaymentMethod;
-import com.zakaflow.zakaflow.model.DonationTransaction;
 import com.zakaflow.zakaflow.service.DonationProgramService;
 import com.zakaflow.zakaflow.service.PaymentMethodService;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +63,7 @@ public class DonationProgramController {
 
         model.addAttribute("paymentChannels", PaymentChannel.values());
         model.addAttribute("bankAccounts", paymentMethodService.findActiveByChannel(PaymentChannel.TRANSFER_BANK));
-        model.addAttribute("paymentMethods", PaymentMethod.values());
+        model.addAttribute("paymentMethods", paymentMethodService.findAllActive());
         model.addAttribute("zakatNisabBulanan", zakatProperties.getNisabBulanan());
         model.addAttribute("zakatTarif", zakatProperties.getTarif());
 
