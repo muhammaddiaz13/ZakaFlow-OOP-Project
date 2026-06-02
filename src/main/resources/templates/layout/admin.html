@@ -33,7 +33,10 @@
 <nav th:fragment="navbar" class="bg-stone-900 text-white shadow-lg border-b border-stone-800">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div class="flex items-center gap-3">
-            <a th:href="@{/admin}" class="text-xl font-bold tracking-tight hover:text-accent-300 transition">ZakaFlow</a>
+            <a th:href="@{/}" class="flex items-center gap-3 mx-0 hover:text-accent-300 transition">
+                <img th:src="@{/img/logo.svg}" src="/img/logo.svg" alt="ZakaFlow" class="h-8 w-auto"/>
+                <span class="text-xl font-bold tracking-tight">ZakaFlow</span>
+            </a>
             <span class="text-xs font-semibold uppercase tracking-wider bg-accent-600 text-white px-2 py-0.5 rounded">Admin</span>
         </div>
         <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
@@ -47,7 +50,7 @@
                class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Transaksi</a>
             <a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? 'bg-stone-800 text-accent-200' : ''"
                class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Pengguna</a>
-            <a th:href="@{/}" class="hover:text-accent-200 text-stone-400 hover:bg-stone-800 px-3 py-2 rounded-lg transition text-xs">Situs</a>
+                
             <form th:action="@{/logout}" method="post" class="inline ml-1">
                 <button type="submit" class="bg-accent-600 hover:bg-accent-500 px-3 py-2 rounded-lg transition">Keluar</button>
             </form>

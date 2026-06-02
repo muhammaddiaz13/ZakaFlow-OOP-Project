@@ -51,7 +51,10 @@
 
 <nav th:fragment="navbar" class="bg-primary-900 text-white shadow-lg">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
-        <a th:href="@{/user}" class="text-xl font-bold tracking-tight hover:text-accent-200 transition">ZakaFlow</a>
+        <a th:href="@{/user}" class="flex items-center gap-3 mx-0 hover:text-accent-200 transition">
+            <img th:src="@{/img/logo.svg}" src="/img/logo.svg" alt="ZakaFlow" class="h-8 w-auto"/>
+            <span class="text-xl font-bold tracking-tight">ZakaFlow</span>
+        </a>
         <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
             <a th:href="@{/user}"
                class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition"
