@@ -20,19 +20,19 @@
 
         <dl class="divide-y divide-surface-200">
             <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt class="text-sm font-medium text-stone-500">Username</dt>
-                <dd class="text-sm font-semibold text-stone-900" th:text="${user.username}">-</dd>
+                <div class="text-sm font-medium text-stone-500">Username</div>
+                <div class="text-sm font-semibold text-stone-900" th:text="${user.username}">-</div>
             </div>
             <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt class="text-sm font-medium text-stone-500">Email</dt>
-                <dd class="text-sm font-semibold text-stone-900" th:text="${user.email}">-</dd>
+                <div class="text-sm font-medium text-stone-500">Email</div>
+                <div class="text-sm font-semibold text-stone-900" th:text="${user.email}">-</div>
             </div>
             <div class="px-8 py-5 flex flex-col sm:flex-row sm:justify-between gap-1">
-                <dt class="text-sm font-medium text-stone-500">Peran</dt>
-                <dd>
+                <div class="text-sm font-medium text-stone-500">Peran</div>
+                <div>
                     <span class="inline-block text-xs font-semibold bg-primary-100 text-primary-800 px-3 py-1 rounded-full"
                           th:text="${user.role}">DONATUR</span>
-                </dd>
+                </div>
             </div>
         </dl>
 
@@ -47,48 +47,9 @@
             </a>
         </div>
     </div>
-
-    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-surface-200 p-6">
-        <div class="flex justify-between items-center gap-4 mb-4">
-            <h2 class="text-lg font-bold text-stone-900">Grafik Donasi (6 Bulan)</h2>
-            <a th:href="@{/user/statistics}" class="text-sm font-medium text-primary-700 hover:text-primary-800">Detail &rarr;</a>
-        </div>
-
-        <canvas id="profileChart" height="120"></canvas>
-    </div>
 </main>
 
 <footer th:replace="~{layout/user :: footer}"></footer>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script th:inline="javascript">
-    const labels = /*[[${chartLabels}]]*/ [];
-    const amounts = /*[[${chartAmounts}]]*/ [];
-
-    new Chart(document.getElementById('profileChart'), {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Donasi (Rp)',
-                data: amounts,
-                backgroundColor: 'rgba(77, 107, 78, 0.7)',
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: (v) => 'Rp ' + Number(v).toLocaleString('id-ID')
-                    }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>

@@ -16,7 +16,7 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" th:unless="${#lists.isEmpty(programs)}">
         <article th:each="p : ${programs}"
                  class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition">
-<<<<<<< HEAD
+
             <div th:if="${p.imagePath != null}" class="h-40 overflow-hidden bg-slate-100">
                 <img th:src="@{'/uploads/' + ${p.imagePath}}" th:alt="${p.title}"
                      class="w-full h-full object-cover"/>
@@ -24,7 +24,7 @@
             <div th:unless="${p.imagePath != null}" class="h-40 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-primary-700 text-sm font-medium">
                 Program Donasi
             </div>
-=======
+
             <div>
                 <div th:if="${p.imageFilename != null}" class="w-full h-40 overflow-hidden">
                     <img th:src="@{'/uploads/programs/thumbnails/' + ${p.imageFilename}}" alt="thumbnail" class="w-full h-40 object-cover"/>
@@ -32,7 +32,7 @@
                 <div th:unless="${p.imageFilename != null}" class="w-full h-40 bg-slate-100 flex items-center justify-center text-slate-400">
                     Gambar belum tersedia
                 </div>
->>>>>>> d15ec4ecb96c48474c8d6caf7007068a4002d800
+
             <div class="p-5">
                 <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded"
                       th:text="${p.category.name}">Kategori</span>
