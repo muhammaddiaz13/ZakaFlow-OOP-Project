@@ -34,3 +34,7 @@ build/
 
 # Amankan kredensial database lokal
 src/main/resources/application.properties
+
+# Amankan script eksekusi lokal
+jalan.sh
+*.sh
