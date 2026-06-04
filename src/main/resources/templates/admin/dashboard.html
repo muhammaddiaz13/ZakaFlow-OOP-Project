@@ -11,7 +11,7 @@
 
     <div th:replace="~{layout/admin :: alerts}"></div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
         <div class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
             <p class="text-xs font-semibold uppercase text-stone-500">Pengguna</p>
             <p class="text-3xl font-bold text-stone-900 mt-2" th:text="${userCount}">0</p>
@@ -24,7 +24,6 @@
             <p class="text-xs font-semibold uppercase text-stone-500">Kategori</p>
             <p class="text-3xl font-bold text-accent-700 mt-2" th:text="${categoryCount}">0</p>
         </div>
-        
     </div>
 
     <div class="grid lg:grid-cols-3 gap-6 mb-8">
