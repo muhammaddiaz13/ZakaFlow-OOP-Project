@@ -38,3 +38,6 @@ src/main/resources/application.properties
 # Amankan script eksekusi lokal
 jalan.sh
 *.sh
+
+# Amankan file .env lokal
+.env
