@@ -12,8 +12,8 @@
     </a>
 
     <article class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div th:if="${program.imagePath != null}" class="h-56 md:h-72 overflow-hidden bg-slate-100">
-            <img th:src="@{'/uploads/' + ${program.imagePath}}" th:alt="${program.title}"
+        <div th:if="${program.imageData != null}" class="h-56 md:h-72 overflow-hidden bg-slate-100">
+            <img th:src="@{'/programs/image/' + ${program.id}}" th:alt="${program.title}"
                  class="w-full h-full object-cover"/>
         </div>
         <div class="p-8">

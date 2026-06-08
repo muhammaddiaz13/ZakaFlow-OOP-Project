@@ -41,8 +41,8 @@
 
         <div>
             <label for="image" class="block text-sm font-medium text-stone-700 mb-1">Gambar Program</label>
-            <div th:if="${program.imagePath != null}" class="mb-3">
-                <img th:src="@{'/uploads/' + ${program.imagePath}}" alt="Gambar program"
+            <div th:if="${program.imageData != null}" class="mb-3">
+                <img th:src="@{'/programs/image/' + ${program.id}}" alt="Gambar program"
                         class="w-full max-h-48 object-cover rounded-lg border border-stone-200"/>
                 <label class="mt-2 flex items-center gap-2 text-sm text-stone-600">
                     <input type="checkbox" name="removeImage" value="true" class="rounded border-stone-300"/>

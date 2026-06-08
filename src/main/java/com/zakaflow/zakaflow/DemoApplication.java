@@ -15,6 +15,8 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
+
+
 	private static void loadEnv() {
 		try {
 			if (Files.exists(Paths.get(".env"))) {
@@ -43,3 +45,5 @@ public class DemoApplication {
 		}
 	}
 }
+
+

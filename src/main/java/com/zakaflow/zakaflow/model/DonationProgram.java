@@ -33,8 +33,12 @@ public class DonationProgram {
     @Column(nullable = false)
     private boolean isCompleted = false;
 
-    @Column(name = "image_path", length = 255)
-    private String imagePath;
+    @Lob
+    @Column(name = "image_data")
+    private byte[] imageData;
+
+    @Column(name = "image_content_type", length = 100)
+    private String imageContentType;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
@@ -46,7 +50,4 @@ public class DonationProgram {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<DonationTransaction> transactions = new ArrayList<>();
-
-    @Column(length = 255)
-    private String imageFilename;
 }

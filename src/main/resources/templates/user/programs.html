@@ -16,8 +16,8 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" th:unless="${#lists.isEmpty(programs)}">
         <article th:each="p : ${programs}"
                  class="bg-white rounded-xl shadow-sm border border-surface-200 overflow-hidden hover:shadow-md transition">
-            <div th:if="${p.imagePath != null}" class="h-40 overflow-hidden bg-surface-100">
-                <img th:src="@{'/uploads/' + ${p.imagePath}}" th:alt="${p.title}" class="w-full h-full object-cover"/>
+            <div th:if="${p.imageData != null}" class="h-40 overflow-hidden bg-surface-100">
+                <img th:src="@{'/programs/image/' + ${p.id}}" th:alt="${p.title}" class="w-full h-full object-cover"/>
             </div>
             <div class="p-5">
                 <span class="text-xs font-medium text-primary-800 bg-primary-100 px-2 py-1 rounded"

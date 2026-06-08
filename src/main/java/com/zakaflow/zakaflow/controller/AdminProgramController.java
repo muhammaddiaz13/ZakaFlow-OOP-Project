@@ -4,9 +4,7 @@ import com.zakaflow.zakaflow.model.Category;
 import com.zakaflow.zakaflow.model.DonationProgram;
 import com.zakaflow.zakaflow.service.CategoryService;
 import com.zakaflow.zakaflow.service.DonationProgramService;
-import com.zakaflow.zakaflow.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +20,6 @@ public class AdminProgramController {
 
     private final DonationProgramService donationProgramService;
     private final CategoryService categoryService;
-    private final FileStorageService fileStorageService;
-
-    @Value("${app.upload.dir:uploads}")
-    private String uploadDir;
 
     @GetMapping
     public String list(Model model) {
@@ -90,16 +84,16 @@ public class AdminProgramController {
 
         try {
             if (removeImage) {
-                fileStorageService.deleteIfExists(program.getImagePath());
-                program.setImagePath(null);
+                program.setImageData(null);
+                program.setImageContentType(null);
             }
             if (image != null && !image.isEmpty()) {
-                String storedName = fileStorageService.storeProgramImage(image);
-                if (storedName != null) {
-                    fileStorageService.deleteIfExists(program.getImagePath());
-                    program.setImagePath(storedName);
-                }
+                program.setImageData(image.getBytes());
+                program.setImageContentType(image.getContentType());
             }
+        } catch (java.io.IOException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal membaca data gambar: " + ex.getMessage());
+            return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
@@ -113,7 +107,6 @@ public class AdminProgramController {
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            donationProgramService.findById(id).ifPresent(p -> fileStorageService.deleteIfExists(p.getImagePath()));
             donationProgramService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Program berhasil dihapus.");
         } catch (Exception ex) {

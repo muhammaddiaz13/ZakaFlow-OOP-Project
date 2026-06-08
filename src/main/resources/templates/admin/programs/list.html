@@ -38,9 +38,9 @@
             <tr th:each="p : ${programs}" class="border-b border-stone-100 hover:bg-stone-50/50">
                 <td class="px-5 py-4">
                     <div class="flex items-center gap-3">
-                        <img th:if="${p.imagePath != null}" th:src="@{'/uploads/' + ${p.imagePath}}"
+                        <img th:if="${p.imageData != null}" th:src="@{'/programs/image/' + ${p.id}}"
                              alt="" class="w-12 h-12 rounded-lg object-cover border border-stone-200 shrink-0"/>
-                        <div th:unless="${p.imagePath != null}"
+                        <div th:unless="${p.imageData != null}"
                              class="w-12 h-12 rounded-lg bg-primary-100 text-primary-700 text-xs flex items-center justify-center shrink-0 font-semibold">IMG</div>
                         <div>
                             <p class="font-medium text-stone-900" th:text="${p.title}">Judul</p>
