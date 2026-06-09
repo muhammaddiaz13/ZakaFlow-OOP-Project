@@ -4,6 +4,7 @@ import com.zakaflow.zakaflow.model.Category;
 import com.zakaflow.zakaflow.model.DonationProgram;
 import com.zakaflow.zakaflow.service.CategoryService;
 import com.zakaflow.zakaflow.service.DonationProgramService;
+import com.zakaflow.zakaflow.service.ImageStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ public class AdminProgramController {
 
     private final DonationProgramService donationProgramService;
     private final CategoryService categoryService;
+    private final ImageStorageService imageStorageService;
 
     @GetMapping
     public String list(Model model) {
@@ -50,7 +52,7 @@ public class AdminProgramController {
             @RequestParam(required = false) Long id,
             @RequestParam String title,
             @RequestParam String description,
-            @RequestParam BigDecimal targetAmount,
+            @RequestParam(required = false) BigDecimal targetAmount,
             @RequestParam(required = false) MultipartFile image,
             @RequestParam Long categoryId,
             @RequestParam(value = "removeImage", defaultValue = "false") boolean removeImage,
@@ -60,13 +62,20 @@ public class AdminProgramController {
             redirectAttributes.addFlashAttribute("errorMessage", "Judul program wajib diisi.");
             return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
         }
-        if (targetAmount == null || targetAmount.signum() <= 0) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Target donasi harus lebih dari 0.");
-            return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
-        }
 
         Category category = categoryService.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Kategori tidak ditemukan"));
+
+        boolean isZakat = category.getName().equalsIgnoreCase("Zakat");
+
+        if (!isZakat) {
+            if (targetAmount == null || targetAmount.signum() <= 0) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Target donasi harus lebih dari 0.");
+                return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
+            }
+        } else {
+            targetAmount = BigDecimal.ZERO;
+        }
 
         DonationProgram program = id != null
                 ? donationProgramService.findById(id).orElse(new DonationProgram())
@@ -88,12 +97,11 @@ public class AdminProgramController {
                 program.setImageContentType(null);
             }
             if (image != null && !image.isEmpty()) {
-                program.setImageData(image.getBytes());
-                program.setImageContentType(image.getContentType());
+                // Konversi gambar ke format WebP secara otomatis sebelum disimpan ke database
+                byte[] webpBytes = imageStorageService.convertToWebp(image);
+                program.setImageData(webpBytes);
+                program.setImageContentType("image/webp");
             }
-        } catch (java.io.IOException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Gagal membaca data gambar: " + ex.getMessage());
-            return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return id != null ? "redirect:/admin/programs/" + id + "/edit" : "redirect:/admin/programs/new";
@@ -111,6 +119,22 @@ public class AdminProgramController {
             redirectAttributes.addFlashAttribute("successMessage", "Program berhasil dihapus.");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Program tidak dapat dihapus (mungkin masih memiliki transaksi).");
+        }
+        return "redirect:/admin/programs";
+    }
+
+    @PostMapping("/{id}/toggle-status")
+    public String toggleStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            DonationProgram program = donationProgramService.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Program tidak ditemukan"));
+            program.setCompleted(!program.isCompleted());
+            donationProgramService.save(program);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Status program \"" + program.getTitle() + "\" berhasil diubah menjadi " + 
+                (program.isCompleted() ? "Selesai" : "Aktif") + ".");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal mengubah status program: " + ex.getMessage());
         }
         return "redirect:/admin/programs";
     }

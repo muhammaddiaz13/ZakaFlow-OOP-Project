@@ -240,6 +240,25 @@ public class UserDashboardController {
             donationTransactionService.confirmPayment(id, user.getId(), paymentReference);
             redirectAttributes.addFlashAttribute("successMessage",
                     "Pembayaran berhasil dikonfirmasi. Terima kasih atas donasi Anda!");
+            return "redirect:/user/payment/" + id;
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/user/payment/" + id;
+        }
+    }
+
+    @PostMapping("/payment/{id}/simulate")
+    public String simulatePayment(
+            @AuthenticationPrincipal UserDetails principal,
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+        User user = resolveUser(principal);
+        // Memastikan transaksi milik user yang login
+        requireOwnTransaction(user, id);
+        try {
+            donationTransactionService.approvePayment(id);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Simulasi Pembayaran Sukses! Status donasi Anda berhasil diperbarui secara instan.");
             return "redirect:/user/donations/" + id;
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

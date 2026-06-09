@@ -96,9 +96,16 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
 
         if (paymentReference != null && !paymentReference.isBlank()) {
             transaction.setPaymentReference(paymentReference.trim());
+        } else {
+            transaction.setPaymentReference("MOCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
 
-        return completeTransaction(transaction);
+        if (transaction.getPaymentChannel() == PaymentChannel.QRIS ||
+            transaction.getPaymentChannel() == PaymentChannel.E_WALLET) {
+            return completeTransaction(transaction);
+        }
+
+        return transactionRepository.save(transaction);
     }
 
     @Override
@@ -122,7 +129,8 @@ public class DonationTransactionServiceImpl implements DonationTransactionServic
 
         transaction.setStatus(TransactionStatus.SUCCESS);
         program.setCurrentAmount(program.getCurrentAmount().add(transaction.getAmount()));
-        if (program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0) {
+        boolean isZakat = program.getCategory() != null && "Zakat".equalsIgnoreCase(program.getCategory().getName());
+        if (!isZakat && program.getCurrentAmount().compareTo(program.getTargetAmount()) >= 0) {
             program.setCompleted(true);
         }
         programRepository.save(program);

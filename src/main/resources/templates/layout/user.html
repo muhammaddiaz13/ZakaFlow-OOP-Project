@@ -58,6 +58,44 @@
 </head>
 <body class="bg-surface-50 text-gray-600 min-h-screen flex flex-col font-sans antialiased">
 
+<nav th:fragment="navbar" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-surface-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a th:href="@{/user}" class="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight hover:text-primary-600 transition">
+                <span class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white text-sm font-extrabold">Z</span>
+                ZakaFlow <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-50 text-primary-700 border border-primary-100 ml-1">Donatur</span>
+            </a>
+            <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+                <a th:href="@{/user}"
+                   th:classappend="${activePage == 'dashboard'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition font-semibold">Ringkasan</a>
+                <a th:href="@{/user/programs}"
+                   th:classappend="${activePage == 'programs'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition font-semibold">Program Donasi</a>
+                <a th:href="@{/user/donations}"
+                   th:classappend="${activePage == 'donations'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition font-semibold">Riwayat Donasi</a>
+                <a th:href="@{/user/statistics}"
+                   th:classappend="${activePage == 'statistics'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition font-semibold">Statistik</a>
+                <a th:href="@{/user/profile}"
+                   th:classappend="${activePage == 'profile'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition font-semibold">Profil</a>
+            </div>
+            <div class="flex items-center gap-2 text-sm font-medium">
+                <span class="hidden lg:inline text-gray-400 text-xs px-2" sec:authentication="name">User</span>
+                <a th:href="@{/}" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-lg transition text-xs border border-surface-200">Lihat Web Publik</a>
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl transition text-sm">
+                        Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
 <footer th:fragment="footer" class="bg-surface-50 border-t border-surface-200 py-6 text-center text-sm text-gray-400 mt-auto">
     &copy; 2026 ZakaFlow — Portal Donatur
 </footer>
