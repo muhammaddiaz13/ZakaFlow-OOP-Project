@@ -14,9 +14,7 @@
         </div>
 
         <div th:if="${successMessage}" class="mb-4 p-3 bg-green-50 text-green-700 text-sm rounded-xl border border-green-100"
-             th:text="${successMessage}">
-            Registrasi berhasil.
-        </div>
+             th:text="${successMessage}"></div>
         <div th:if="${param.error}" class="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-xl border border-red-100">
             Username atau password salah.
         </div>

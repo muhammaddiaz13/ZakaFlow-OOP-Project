@@ -26,6 +26,11 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .successHandler(new RoleBasedAuthenticationSuccessHandler())
                         .permitAll())
+                // Konfigurasi ini menghubungkan Spring Security dengan library OAuth2
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll());
