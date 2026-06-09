@@ -5,87 +5,143 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="${title} + ' | ZakaFlow'">ZakaFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
                     colors: {
-                        /* Sage & forest — hijab & spanduk di bg.jpg */
                         primary: {
-                            50:  '#f4f7f2',
-                            100: '#e3ebe0',
-                            200: '#c9d8c4',
-                            300: '#a3b89c',
-                            400: '#7d9a75',
-                            500: '#5f8260',
-                            600: '#4d6b4e',
-                            700: '#3f5840',
-                            800: '#334833',
-                            900: '#2a3b29',
-                            950: '#1a2619',
+                            50:  '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            950: '#022c22',
                         },
-                        /* Terracotta & golden hour — atap, batik, cahaya matahari */
                         accent: {
-                            50:  '#fdf8f3',
-                            100: '#faeee3',
-                            200: '#f4d9c4',
-                            300: '#e8bc94',
-                            400: '#d9966a',
-                            500: '#c97d4f',
-                            600: '#a8643d',
-                            700: '#8a5032',
-                            800: '#6f4129',
-                            900: '#5a3522',
+                            50:  '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
                         },
-                        /* Krem hangat — kardus & langit senja */
                         surface: {
-                            50:  '#faf7f2',
-                            100: '#f0ebe3',
-                            200: '#e2d9cc',
+                            50:  '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
                         },
+                    },
+                    boxShadow: {
+                        card: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
                     },
                 },
             },
         };
     </script>
 </head>
-<body class="bg-surface-50 text-stone-800 min-h-screen flex flex-col">
+<body class="bg-surface-50 text-gray-600 min-h-screen flex flex-col font-sans antialiased">
 
-<nav th:fragment="navbar" class="bg-primary-900 text-white shadow-lg">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        <a th:href="@{/}" class="text-xl mx-6 font-bold tracking-tight hover:text-accent-200 transition">ZakaFlow</a>
-        <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
-            <a th:href="@{/programs}" class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Program</a>
-            <a th:href="@{/categories}" class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Kategori</a>
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}"
-               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Admin</a>
-            <a sec:authorize="hasRole('DONATUR')" th:href="@{/user}"
-               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Dashboard</a>
-            <a sec:authorize="hasRole('DONATUR')" th:href="@{/user/profile}"
-               class="hover:text-accent-200 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Profil</a>
-
-            <span sec:authorize="isAuthenticated()"
-                  class="hidden sm:inline-flex items-center px-3 py-2 text-white/90">
-                <span class="opacity-80 mr-2">|</span>
-                <span sec:authentication="name" class="font-semibold">User</span>
-            </span>
-            <a sec:authorize="!isAuthenticated()" th:href="@{/login}"
-               class="hover:text-accent-200 bg-accent-500 hover:bg-accent-600 px-3 py-2 mx-1 rounded-lg transition">Masuk</a>
-            <!-- <a sec:authorize="!isAuthenticated()" th:href="@{/register}"
-               class="hover:text-accent-200 border border-accent-400 px-3 py-2 rounded-lg transition">Daftar</a> -->
-            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline ml-1">
-                <button type="submit"
-                        class="hover:text-accent-200 bg-accent-600 hover:bg-accent-500 px-3 py-2 rounded-lg transition">
-                    Keluar
-                </button>
-            </form>
+<nav th:fragment="navbar" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-surface-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <a th:href="@{/}" class="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight hover:text-primary-600 transition">
+                <span class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center text-white text-sm font-extrabold">Z</span>
+                ZakaFlow
+            </a>
+            <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+                <a th:href="@{/}"
+                   th:classappend="${activePage == 'home'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition">Beranda</a>
+                <a th:href="@{/programs}"
+                   th:classappend="${activePage == 'programs'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition">Program</a>
+                <a th:href="@{/} + '#kalkulator'"
+                   class="px-4 py-5 text-gray-600 hover:text-primary-600 border-b-2 border-transparent transition">Kalkulator</a>
+                <a th:href="@{/categories}"
+                   th:classappend="${activePage == 'categories'} ? 'text-primary-600 border-b-2 border-primary-500' : 'text-gray-600 hover:text-primary-600 border-b-2 border-transparent'"
+                   class="px-4 py-5 transition">Kategori</a>
+            </div>
+            <div class="flex items-center gap-2 text-sm font-medium">
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}"
+                   class="hidden sm:inline text-gray-600 hover:text-primary-600 px-3 py-2 rounded-lg transition">Admin</a>
+                <a sec:authorize="hasRole('DONATUR')" th:href="@{/user}"
+                   class="hidden sm:inline text-gray-600 hover:text-primary-600 px-3 py-2 rounded-lg transition">Dashboard</a>
+                <span sec:authorize="isAuthenticated()"
+                      class="hidden lg:inline text-gray-400 text-xs px-2"
+                      sec:authentication="name">User</span>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}"
+                   class="text-gray-700 hover:text-primary-600 border border-surface-200 hover:border-primary-300 px-4 py-2 rounded-xl transition">Masuk</a>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/programs}"
+                   class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-xl shadow-sm transition font-semibold">Bayar Zakat</a>
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl transition text-sm">
+                        Keluar
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
 
-<footer th:fragment="footer" class="bg-surface-50 border-t border-surface-200 py-6 text-center text-sm text-stone-500 mt-auto">
-    &copy; 2026 ZakaFlow — Sistem Informasi Pengelolaan Zakat &amp; Donasi
+<footer th:fragment="footer" class="bg-surface-50 border-t border-surface-200 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 font-bold text-lg text-gray-900 mb-3">
+                    <span class="w-7 h-7 rounded-lg bg-primary-500 flex items-center justify-center text-white text-xs font-extrabold">Z</span>
+                    ZakaFlow
+                </div>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    Platform digital pengelolaan zakat, infak, dan sedekah yang transparan dan terpercaya.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Navigasi</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a th:href="@{/}" class="text-gray-500 hover:text-primary-600 transition">Beranda</a></li>
+                    <li><a th:href="@{/programs}" class="text-gray-500 hover:text-primary-600 transition">Program Donasi</a></li>
+                    <li><a th:href="@{/categories}" class="text-gray-500 hover:text-primary-600 transition">Kategori</a></li>
+                    <li><a th:href="@{/login}" class="text-gray-500 hover:text-primary-600 transition">Masuk</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Bantuan</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a th:href="@{/} + '#kalkulator'" class="text-gray-500 hover:text-primary-600 transition">Kalkulator Zakat</a></li>
+                    <li><a th:href="@{/programs}" class="text-gray-500 hover:text-primary-600 transition">Cara Donasi</a></li>
+                    <li><span class="text-gray-500">Kebijakan Privasi</span></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Kontak</h3>
+                <p class="text-sm text-gray-500 leading-relaxed">
+                    Email: info@zakaflow.id<br/>
+                    WhatsApp: 0812-3456-7890
+                </p>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-surface-200 text-center text-sm text-gray-400">
+            &copy; 2026 ZakaFlow — Sistem Informasi Pengelolaan Zakat &amp; Donasi
+        </div>
+    </div>
 </footer>
 
 </body>

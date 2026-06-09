@@ -5,57 +5,67 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="${title} + ' | ZakaFlow Admin'">ZakaFlow Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
                     colors: {
                         primary: {
-                            50:  '#f4f7f2', 100: '#e3ebe0', 200: '#c9d8c4', 300: '#a3b89c',
-                            400: '#7d9a75', 500: '#5f8260', 600: '#4d6b4e', 700: '#3f5840',
-                            800: '#334833', 900: '#2a3b29', 950: '#1a2619',
+                            50:  '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7',
+                            400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857',
+                            800: '#065f46', 900: '#064e3b', 950: '#022c22',
                         },
                         accent: {
-                            50:  '#fdf8f3', 100: '#faeee3', 200: '#f4d9c4', 300: '#e8bc94',
-                            400: '#d9966a', 500: '#c97d4f', 600: '#a8643d', 700: '#8a5032',
-                            800: '#6f4129', 900: '#5a3522',
+                            50:  '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f',
                         },
-                        surface: { 50: '#faf7f2', 100: '#f0ebe3', 200: '#e2d9cc' },
+                        surface: { 50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb' },
+                    },
+                    boxShadow: {
+                        card: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
                     },
                 },
             },
         };
     </script>
 </head>
-<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+<body class="bg-surface-50 text-gray-600 min-h-screen flex flex-col font-sans antialiased">
 
-<nav th:fragment="navbar" class="bg-stone-900 text-white shadow-lg border-b border-stone-800">
+<nav th:fragment="navbar" class="bg-primary-900 text-white shadow-lg border-b border-primary-950">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-3">
-        <div class="flex items-center gap-1">
-            <a th:href="@{/}" class="text-xl mx-6 font-bold tracking-tight hover:text-accent-300 transition">ZakaFlow</a>
-            <span class="text-xs font-semibold uppercase tracking-wider bg-accent-600 text-white px-2 py-0.5 rounded">Admin</span>
+        <div class="flex items-center gap-2">
+            <a th:href="@{/}" class="flex items-center gap-2 text-xl font-bold tracking-tight hover:text-primary-200 transition">
+                <span class="w-7 h-7 rounded-lg bg-primary-500 flex items-center justify-center text-white text-xs font-extrabold">Z</span>
+                ZakaFlow
+            </a>
+            <span class="text-xs font-semibold uppercase tracking-wider bg-accent-500 text-white px-2 py-0.5 rounded-lg">Admin</span>
         </div>
         <div class="flex flex-wrap gap-1 text-sm font-medium items-center">
-            <a th:href="@{/admin}" th:classappend="${activePage == 'dashboard'} ? 'bg-stone-800 text-accent-200' : ''"
-               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Dashboard</a>
-            <a th:href="@{/admin/programs}" th:classappend="${activePage == 'programs'} ? 'bg-stone-800 text-accent-200' : ''"
-               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Program</a>
-            <a th:href="@{/admin/categories}" th:classappend="${activePage == 'categories'} ? 'bg-stone-800 text-accent-200' : ''"
-               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Kategori</a>
-            <!-- <a th:href="@{/admin/transactions}" th:classappend="${activePage == 'transactions'} ? 'bg-stone-800 text-accent-200' : ''"
-               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Transaksi</a> -->
-            <a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? 'bg-stone-800 text-accent-200' : ''"
-               class="hover:text-accent-200 hover:bg-stone-800 px-3 py-2 rounded-lg transition">Pengguna</a>
-            <a th:href="@{/}" class="hover:text-accent-200 text-stone-400 hover:bg-stone-800 px-3 py-2 rounded-lg transition text-xs">Situs</a>
+            <a th:href="@{/admin}" th:classappend="${activePage == 'dashboard'} ? 'bg-primary-800 text-primary-100' : ''"
+               class="hover:text-primary-100 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Dashboard</a>
+            <a th:href="@{/admin/programs}" th:classappend="${activePage == 'programs'} ? 'bg-primary-800 text-primary-100' : ''"
+               class="hover:text-primary-100 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Program</a>
+            <a th:href="@{/admin/categories}" th:classappend="${activePage == 'categories'} ? 'bg-primary-800 text-primary-100' : ''"
+               class="hover:text-primary-100 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Kategori</a>
+            <a th:href="@{/admin/users}" th:classappend="${activePage == 'users'} ? 'bg-primary-800 text-primary-100' : ''"
+               class="hover:text-primary-100 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Pengguna</a>
+            <a th:href="@{/}" class="hover:text-primary-200 text-primary-300 hover:bg-primary-800 px-3 py-2 rounded-lg transition text-xs">Situs</a>
             <form th:action="@{/logout}" method="post" class="inline ml-1">
-                <button type="submit" class="bg-accent-600 hover:bg-accent-500 px-3 py-2 rounded-lg transition">Keluar</button>
+                <button type="submit" class="bg-accent-500 hover:bg-accent-600 px-3 py-2 rounded-lg transition font-semibold">Keluar</button>
             </form>
         </div>
     </div>
 </nav>
 
-<footer th:fragment="footer" class="bg-stone-100 border-t border-stone-200 py-5 text-center text-sm text-stone-500 mt-auto">
+<footer th:fragment="footer" class="bg-surface-50 border-t border-surface-200 py-5 text-center text-sm text-gray-400 mt-auto">
     &copy; 2026 ZakaFlow — Panel Administrator
 </footer>
 
