@@ -24,4 +24,11 @@ public interface UserService {
     void changePassword(Long userId, String currentPassword, String newPassword);
 
     void deleteById(Long id);
+
+    // === TAMBAHKAN 3 BARIS METHOD INI DI PALING BAWAH ===
+    String createPasswordResetTokenForUser(String email);
+    
+    boolean validatePasswordResetToken(String token);
+    
+    void changeUserPassword(String token, String newPassword);
 }

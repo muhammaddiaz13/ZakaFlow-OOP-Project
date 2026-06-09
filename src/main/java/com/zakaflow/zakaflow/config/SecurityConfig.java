@@ -18,10 +18,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/error", "/css/**", "/js/**", "/img/**", "/uploads/**", "/image-upload/**").permitAll()
+                        // SUDAH DIPERBAIKI: Menggunakan "/forgot-password/**" dengan garis miring di depan
+                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/forgot-password/**", "/error", "/css/**", "/js/**", "/img/**", "/uploads/**", "/image-upload/**").permitAll()
                         .requestMatchers("/user/**").hasRole("DONATUR")
                         .requestMatchers("/admin/**", "/transactions/**").hasRole("ADMIN")
-                        .anyRequest().hasRole("ADMIN"))
+                        .anyRequest().authenticated()) // Menggunakan authenticated() agar endpoint lain aman
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(new RoleBasedAuthenticationSuccessHandler())
