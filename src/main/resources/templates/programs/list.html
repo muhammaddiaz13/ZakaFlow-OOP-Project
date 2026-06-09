@@ -31,7 +31,17 @@
                 <h2 class="text-lg font-semibold text-gray-900" th:text="${p.title}">Judul</h2>
                 <p class="text-sm text-gray-500 mt-2 line-clamp-3" th:text="${p.description}">Deskripsi</p>
 
-                <th:block th:with="progress=${p.targetAmount.signum() > 0 ? (p.currentAmount.doubleValue() / p.targetAmount.doubleValue() * 100) : 0}">
+                <!-- Jika Kategori Zakat, tampilkan hanya Terkumpul -->
+                <div th:if="${p.category.name.equalsIgnoreCase('Zakat')}" class="mt-4">
+                    <div class="flex justify-between text-sm text-gray-500 mb-1.5">
+                        <span>Terkumpul</span>
+                        <span class="font-semibold text-primary-500" th:text="'Rp ' + ${#numbers.formatDecimal(p.currentAmount, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Jika Kategori selain Zakat, tampilkan biasa -->
+                <th:block th:unless="${p.category.name.equalsIgnoreCase('Zakat')}"
+                          th:with="progress=${p.targetAmount.signum() > 0 ? (p.currentAmount.doubleValue() / p.targetAmount.doubleValue() * 100) : 0}">
                     <div class="mt-4">
                         <div class="flex justify-between text-sm text-gray-500 mb-1.5">
                             <span>Terkumpul</span>

@@ -36,7 +36,16 @@
             </div>
         </div>
 
-        <th:block th:with="progress=${program.targetAmount.signum() > 0 ? (program.currentAmount.doubleValue() / program.targetAmount.doubleValue() * 100) : 0}">
+        <!-- Jika Kategori Zakat, tampilkan hanya Terkumpul -->
+        <div th:if="${program.category.name.equalsIgnoreCase('Zakat')}" class="mt-8 p-5 bg-slate-50 rounded-xl">
+            <div class="text-sm font-medium text-slate-700">
+                Terkumpul: <strong class="text-xl text-primary-600 ml-1" th:text="'Rp ' + ${#numbers.formatDecimal(program.currentAmount, 0, 'COMMA', 0, 'POINT')}">Rp 0</strong>
+            </div>
+        </div>
+
+        <!-- Jika Kategori selain Zakat, tampilkan biasa -->
+        <th:block th:unless="${program.category.name.equalsIgnoreCase('Zakat')}" 
+                  th:with="progress=${program.targetAmount.signum() > 0 ? (program.currentAmount.doubleValue() / program.targetAmount.doubleValue() * 100) : 0}">
             <div class="mt-8 p-5 bg-slate-50 rounded-xl">
                 <div class="flex justify-between text-sm font-medium text-slate-700 mb-2">
                     <span>Progress Donasi</span>
@@ -58,7 +67,8 @@
              th:text="${errorMessage}">Error</div>
 
         <div th:if="${program.isCompleted}" class="mt-6 p-4 bg-green-50 text-green-800 rounded-lg text-sm font-medium border border-green-100">
-            Program ini telah mencapai target donasi. Terima kasih!
+            <span th:if="${program.category.name.equalsIgnoreCase('Zakat')}">Program pengumpulan zakat ini telah ditutup. Terima kasih!</span>
+            <span th:unless="${program.category.name.equalsIgnoreCase('Zakat')}">Program ini telah mencapai target donasi. Terima kasih!</span>
         </div>
 
         <div th:unless="${program.isCompleted}" class="mt-6">

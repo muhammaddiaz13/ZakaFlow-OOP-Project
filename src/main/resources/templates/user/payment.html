@@ -34,114 +34,157 @@
       &nbsp;·&nbsp; ID: #<span th:text="${transaction.id}">1</span>
     </p>
   </div>
-
-  <!-- QRIS -->
-  <div th:if="${transaction.paymentChannel.name() == 'QRIS'}"
-       class="bg-white rounded-2xl border border-surface-200 p-6 mb-6 text-center">
-    <h2 class="font-semibold text-stone-900 mb-4">Scan QRIS</h2>
-    <div class="mx-auto w-48 h-48 bg-stone-100 border-2 border-dashed border-stone-300 rounded-xl flex items-center justify-center">
-      <div class="text-center px-4">
-        <div class="text-4xl mb-2">📱</div>
-        <p class="text-xs text-stone-500 font-medium" th:text="${payment.qrisMerchant}">Merchant</p>
-        <p class="text-[10px] text-stone-400 mt-1">QR Code Demo</p>
-      </div>
+  <!-- Pending Verification State -->
+  <div th:if="${transaction.paymentReference != null}"
+       class="bg-white rounded-2xl border border-amber-200 p-8 mb-6 text-center shadow-sm relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-1.5 bg-amber-400 animate-pulse"></div>
+    <div class="mx-auto w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+      <span class="text-3xl animate-bounce">⏳</span>
     </div>
-    <p class="text-sm text-stone-600 mt-4">
-      Buka aplikasi e-banking / e-wallet, pilih <strong>Scan QRIS</strong>, lalu bayar sesuai nominal.
+    <h2 class="text-xl font-bold text-stone-900 mb-2">Menunggu Verifikasi Admin</h2>
+    <p class="text-stone-600 text-sm max-w-md mx-auto mb-5 leading-relaxed">
+      Bukti pembayaran Anda telah dikirim dengan No. Referensi: <strong th:text="${transaction.paymentReference}" class="font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">ZF123</strong>. Admin ZakaFlow akan memvalidasi transfer Anda di dasbor admin.
+    </p>
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold border border-amber-100">
+      <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+      Status: Pending (Verifikasi Manual)
+    </div>
+    <p class="text-xs text-stone-400 mt-6 leading-relaxed">
+      Anda dapat menyetujui transaksi ini secara manual lewat dasbor Admin di menu **Riwayat Transaksi**, atau gunakan tombol bayar instan pada panel simulasi di bawah.
     </p>
   </div>
 
-  <!-- Transfer Bank -->
-  <div th:if="${transaction.paymentChannel.name() == 'TRANSFER_BANK'}"
-       class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
-    <h2 class="font-semibold text-stone-900 mb-2">Transfer Bank</h2>
-    <p class="text-sm text-stone-600 mb-4">
-      Transfer ke rekening tujuan berikut melalui <strong>antarbank / BI-FAST / LLG</strong>.
-    </p>
+  <div th:if="${transaction.paymentReference == null}">
+    <!-- QRIS -->
+    <div th:if="${transaction.paymentChannel.name() == 'QRIS'}"
+         class="bg-white rounded-2xl border border-surface-200 p-6 mb-6 text-center">
+      <h2 class="font-semibold text-stone-900 mb-4">Scan QRIS</h2>
+      <div class="mx-auto w-48 h-48 bg-white border border-stone-200 p-2 rounded-2xl flex items-center justify-center shadow-inner mb-4">
+        <img th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=ZakaFlow-Trx-' + ${transaction.id} + '-Amount-' + ${transaction.amount}}"
+             alt="QRIS Code" class="w-full h-full object-contain" />
+      </div>
+      <p class="text-xs text-stone-500 font-medium" th:text="${payment.qrisMerchant}">Merchant</p>
+      <p class="text-[10px] text-stone-400 mt-0.5">QRIS Dynamic Generator Sandbox</p>
+      <p class="text-sm text-stone-600 mt-4 leading-relaxed">
+        Buka aplikasi e-banking / e-wallet, pilih <strong>Scan QRIS</strong>, lalu bayar sesuai nominal.
+      </p>
+    </div>
 
-    <article th:if="${transaction.paymentMethod != null}"
-             class="border border-surface-200 rounded-xl p-4 bg-surface-50/50 mb-4">
-      <h3 class="font-bold text-primary-800 mb-2" th:text="${transaction.paymentMethod.name}">BCA</h3>
-      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-        <div>
-          <dt class="text-stone-500 text-xs">No. Rekening</dt>
-          <dd class="font-mono font-semibold text-stone-900" th:text="${transaction.paymentMethod.accountNumber}">123</dd>
-        </div>
-        <div>
-          <dt class="text-stone-500 text-xs">Atas Nama</dt>
-          <dd class="font-semibold text-stone-900" th:text="${transaction.paymentMethod.accountHolder}">ZakaFlow</dd>
-        </div>
-      </dl>
-    </article>
+    <!-- Transfer Bank -->
+    <div th:if="${transaction.paymentChannel.name() == 'TRANSFER_BANK'}"
+         class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
+      <h2 class="font-semibold text-stone-900 mb-2">Transfer Bank</h2>
+      <p class="text-sm text-stone-600 mb-4">
+        Transfer ke rekening tujuan berikut melalui <strong>antarbank / BI-FAST / LLG</strong>.
+      </p>
 
-    <div th:if="${transaction.paymentMethod == null}" class="space-y-3 mb-4">
-      <article th:each="bank : ${payment.bankAccounts}"
-               class="border border-surface-200 rounded-xl p-4 hover:border-primary-300 transition bg-surface-50/50">
-        <h3 class="font-bold text-primary-800 mb-2" th:text="${bank.bankName}">BCA</h3>
+      <article th:if="${transaction.paymentMethod != null}"
+               class="border border-surface-200 rounded-xl p-4 bg-surface-50/50 mb-4">
+        <h3 class="font-bold text-primary-800 mb-2" th:text="${transaction.paymentMethod.name}">BCA</h3>
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
           <div>
             <dt class="text-stone-500 text-xs">No. Rekening</dt>
-            <dd class="font-mono font-semibold text-stone-900" th:text="${bank.accountNumber}">123</dd>
+            <dd class="font-mono font-semibold text-stone-900" th:text="${transaction.paymentMethod.accountNumber}">123</dd>
           </div>
           <div>
             <dt class="text-stone-500 text-xs">Atas Nama</dt>
-            <dd class="font-semibold text-stone-900" th:text="${bank.accountHolder}">ZakaFlow</dd>
+            <dd class="font-semibold text-stone-900" th:text="${transaction.paymentMethod.accountHolder}">ZakaFlow</dd>
           </div>
         </dl>
       </article>
+
+      <div th:if="${transaction.paymentMethod == null}" class="space-y-3 mb-4">
+        <article th:each="bank : ${payment.bankAccounts}"
+                 class="border border-surface-200 rounded-xl p-4 hover:border-primary-300 transition bg-surface-50/50">
+          <h3 class="font-bold text-primary-800 mb-2" th:text="${bank.bankName}">BCA</h3>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+            <div>
+              <dt class="text-stone-500 text-xs">No. Rekening</dt>
+              <dd class="font-mono font-semibold text-stone-900" th:text="${bank.accountNumber}">123</dd>
+            </div>
+            <div>
+              <dt class="text-stone-500 text-xs">Atas Nama</dt>
+              <dd class="font-semibold text-stone-900" th:text="${bank.accountHolder}">ZakaFlow</dd>
+            </div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="flex justify-between items-center py-3 px-4 bg-primary-50 rounded-lg border border-primary-100 text-sm mb-4">
+        <span class="text-stone-600">Nominal transfer</span>
+        <span class="font-bold text-primary-800"
+              th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
+      </div>
+
+      <p class="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded-lg p-3">
+        Cantumkan kode <strong th:text="'ZF' + ${transaction.id}">ZF1</strong> di berita transfer agar mudah diverifikasi.
+      </p>
     </div>
 
-    <div class="flex justify-between items-center py-3 px-4 bg-primary-50 rounded-lg border border-primary-100 text-sm mb-4">
-      <span class="text-stone-600">Nominal transfer</span>
-      <span class="font-bold text-primary-800"
-            th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</span>
+    <!-- E-Wallet -->
+    <div th:if="${transaction.paymentChannel.name() == 'E_WALLET'}"
+         class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
+      <h2 class="font-semibold text-stone-900 mb-4">E-Wallet</h2>
+      <p class="text-sm text-stone-600 mb-4" th:text="${payment.ewalletInfo}">Info e-wallet</p>
+      <p class="text-sm text-stone-600">
+        Transfer ke nomor di atas sebesar
+        <strong th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</strong>.
+      </p>
     </div>
 
-    <p class="text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded-lg p-3">
-      Cantumkan kode <strong th:text="'ZF' + ${transaction.id}">ZF1</strong> di berita transfer agar mudah diverifikasi.
-    </p>
-  </div>
-
-  <!-- E-Wallet -->
-  <div th:if="${transaction.paymentChannel.name() == 'E_WALLET'}"
-       class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
-    <h2 class="font-semibold text-stone-900 mb-4">E-Wallet</h2>
-    <p class="text-sm text-stone-600 mb-4" th:text="${payment.ewalletInfo}">Info e-wallet</p>
-    <p class="text-sm text-stone-600">
-      Transfer ke nomor di atas sebesar
-      <strong th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</strong>.
-    </p>
-  </div>
-
-  <!-- Tunai -->
-  <div th:if="${transaction.paymentChannel.name() == 'CASH'}"
-       class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
-    <h2 class="font-semibold text-stone-900 mb-4">Pembayaran Tunai</h2>
-    <p class="text-sm text-stone-600">
-      Silakan datang ke kantor ZakaFlow untuk menyerahkan donasi tunai sebesar
-      <strong th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</strong>.
-      Tunjukkan ID transaksi <strong th:text="'#' + ${transaction.id}">#1</strong> kepada petugas.
-    </p>
-  </div>
-
-  <form th:action="@{/user/payment/{id}/confirm(id=${transaction.id})}" method="post"
-        class="bg-white rounded-2xl border border-surface-200 p-6 space-y-4">
-    <div th:if="${transaction.paymentChannel.name() == 'TRANSFER_BANK' or transaction.paymentChannel.name() == 'E_WALLET'}">
-      <label for="paymentReference" class="block text-sm font-medium text-stone-700 mb-1">
-        No. Referensi / Bukti (opsional)
-      </label>
-      <input type="text" id="paymentReference" name="paymentReference" maxlength="100"
-             class="w-full px-4 py-2.5 border border-surface-200 rounded-lg focus:ring-2 focus:ring-primary-600 outline-none"
-             placeholder="Contoh: TRF123456 atau 5 digit terakhir"/>
+    <!-- Tunai -->
+    <div th:if="${transaction.paymentChannel.name() == 'CASH'}"
+         class="bg-white rounded-2xl border border-surface-200 p-6 mb-6">
+      <h2 class="font-semibold text-stone-900 mb-4">Pembayaran Tunai</h2>
+      <p class="text-sm text-stone-600">
+        Silakan datang ke kantor ZakaFlow untuk menyerahkan donasi tunai sebesar
+        <strong th:text="'Rp ' + ${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 0, 'POINT')}">Rp 0</strong>.
+        Tunjukkan ID transaksi <strong th:text="'#' + ${transaction.id}">#1</strong> kepada petugas.
+      </p>
     </div>
-    <button type="submit"
-            class="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-lg transition">
-      Saya Sudah Membayar
-    </button>
-    <p class="text-xs text-stone-500 text-center">
-      Setelah dikonfirmasi, donasi akan tercatat dan program akan diperbarui.
+
+    <form th:action="@{/user/payment/{id}/confirm(id=${transaction.id})}" method="post"
+          class="bg-white rounded-2xl border border-surface-200 p-6 space-y-4 mb-6">
+      <div th:if="${transaction.paymentChannel.name() == 'TRANSFER_BANK' or transaction.paymentChannel.name() == 'E_WALLET'}">
+        <label for="paymentReference" class="block text-sm font-medium text-stone-700 mb-1">
+          No. Referensi / Bukti Transfer
+        </label>
+        <input type="text" id="paymentReference" name="paymentReference" maxlength="100"
+               class="w-full px-4 py-2.5 border border-surface-200 rounded-lg focus:ring-2 focus:ring-primary-600 outline-none transition"
+               placeholder="Contoh: TRF123456 atau 5 digit terakhir nomor transfer" required="required"/>
+      </div>
+      <button type="submit"
+              class="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 rounded-lg transition shadow-sm hover:shadow">
+        Saya Sudah Membayar
+      </button>
+      <p class="text-xs text-stone-500 text-center">
+        Setelah dikonfirmasi, status pembayaran akan diproses oleh sistem.
+      </p>
+    </form>
+  </div>
+
+  <!-- Sandbox Demo Panel -->
+  <div class="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100 p-6 shadow-sm mb-6">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-xl">🛠️</span>
+      <h3 class="font-bold text-indigo-950 text-base">ZakaFlow Sandbox Simulator (Demo UAS)</h3>
+    </div>
+    <p class="text-xs text-indigo-700 mb-4 leading-relaxed">
+      Gunakan panel simulator ini untuk menyimulasikan konfirmasi otomatis secara instan. Fitur ini mempercepat pengujian tanpa perlu berpindah ke akun admin.
     </p>
-  </form>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <form th:action="@{/user/payment/{id}/simulate(id=${transaction.id})}" method="post" class="flex-1">
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition shadow-sm hover:shadow flex items-center justify-center gap-2">
+          <span>⚡</span> Bayar Instan (Simulasi Sukses)
+        </button>
+      </form>
+      <a th:href="@{/user/donations}"
+         class="bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 font-medium py-2.5 px-4 rounded-xl text-sm transition text-center shadow-sm flex items-center justify-center">
+        Kembali ke Riwayat
+      </a>
+    </div>
+  </div>
 </main>
 
 <footer th:replace="~{layout/user :: footer}"></footer>
