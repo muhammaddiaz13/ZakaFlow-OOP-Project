@@ -1,30 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="id">
 <head th:replace="~{layout/main :: head('Kategori Donasi')}"></head>
-<body class="bg-surface-50 text-stone-800 min-h-screen flex flex-col">
+<body class="bg-surface-50 text-gray-600 min-h-screen flex flex-col font-sans antialiased">
 
-<nav th:replace="~{layout/main :: navbar}"></nav>
+<nav th:replace="~{layout/main :: navbar}" th:with="activePage='categories'"></nav>
 
 <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
-    <h1 class="text-3xl font-bold text-slate-900 mb-2">Kategori Donasi</h1>
-    <p class="text-slate-600 mb-8">Klasifikasi jenis zakat, infak, dan sedekah.</p>
-<!-- 
-    <div th:if="${#lists.isEmpty(categories)}" class="text-center py-16 text-slate-500">
-        Belum ada kategori.
-    </div> -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Kategori Donasi</h1>
+    <p class="text-gray-500 mb-8">Klasifikasi jenis zakat, infak, dan sedekah.</p>
 
     <div th:unless="${#lists.isEmpty(categories)}" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <article th:each="c : ${categories}"
-                class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center mb-4">
-                <span class="text-primary-700 font-bold text-lg" th:text="${#strings.substring(c.name, 0, 1)}">Z</span>
+                class="bg-white rounded-2xl shadow-card border border-surface-100 p-6 hover:shadow-lg transition">
+            <div class="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center mb-4">
+                <span class="text-primary-600 font-bold text-lg" th:text="${#strings.substring(c.name, 0, 1)}">Z</span>
             </div>
-            <h2 class="text-xl font-semibold text-slate-900" th:text="${c.name}">Nama</h2>
-            <p class="text-sm text-slate-600 mt-2" th:text="${c.description}">Deskripsi kategori</p>
+            <h2 class="text-xl font-semibold text-gray-900" th:text="${c.name}">Nama</h2>
+            <p class="text-sm text-gray-500 mt-2" th:text="${c.description}">Deskripsi kategori</p>
         </article>
     </div>
 
-    <div th:if="${#lists.isEmpty(categories)}" class="text-center py-16 text-slate-500">
+    <div th:if="${#lists.isEmpty(categories)}" class="text-center py-16 bg-white rounded-2xl border border-surface-200 text-gray-500 shadow-card">
         Belum ada kategori.
     </div>
 </main>
