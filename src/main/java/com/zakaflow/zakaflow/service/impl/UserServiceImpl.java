@@ -2,8 +2,10 @@ package com.zakaflow.zakaflow.service.impl;
 
 import com.zakaflow.zakaflow.model.Role;
 import com.zakaflow.zakaflow.model.User;
+import com.zakaflow.zakaflow.model.PasswordResetToken; // Pastikan di-import
 import com.zakaflow.zakaflow.repository.RoleRepository;
 import com.zakaflow.zakaflow.repository.UserRepository;
+import com.zakaflow.zakaflow.repository.PasswordResetTokenRepository; // Pastikan di-import
 import com.zakaflow.zakaflow.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    
+    // === CUKUP TAMBAHKAN SATU BARIS INI (Lombok otomatis mengurus inject-nya) ===
+    private final PasswordResetTokenRepository tokenRepository;
 
     @Override
     public List<User> findAll() {
@@ -109,5 +115,45 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    // ==========================================
+    // SEKARANG TAMBAHKAN 3 METHOD IMPLEMENTASI BARU INI DI PADA BAGIAN BAWAH:
+    // ==========================================
+
+    @Override
+    @Transactional
+    public String createPasswordResetTokenForUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Email tidak terdaftar!"));
+        
+        // Hapus token lama jika user pernah meminta reset sebelumnya agar tidak bentrok
+        tokenRepository.findByUser(user).ifPresent(token -> tokenRepository.delete(token));
+        
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken myToken = new PasswordResetToken(token, user);
+        tokenRepository.save(myToken);
+        
+        return token;
+    }
+
+    @Override
+    public boolean validatePasswordResetToken(String token) {
+        Optional<PasswordResetToken> passToken = tokenRepository.findByToken(token);
+        return passToken.isPresent() && !passToken.get().isExpired();
+    }
+
+    @Override
+    @Transactional
+    public void changeUserPassword(String token, String newPassword) {
+        PasswordResetToken passToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Token tidak valid"));
+                
+        User user = passToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        // Hapus token dari database setelah sukses digunakan
+        tokenRepository.delete(passToken);
     }
 }
