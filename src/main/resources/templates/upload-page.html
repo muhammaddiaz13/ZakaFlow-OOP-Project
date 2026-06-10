@@ -195,6 +195,9 @@
 
 <footer th:replace="~{layout/main :: footer}"></footer>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Custom scripts for frontend interactions -->
 <script th:inline="javascript">
     (function () {
@@ -224,7 +227,13 @@
             if (file) {
                 // Validate if file is an image
                 if (!file.type.match('image/jpeg') && !file.type.match('image/png') && !file.type.match('image/jpg') && !file.type.match('image/webp')) {
-                    alert('Mohon pilih file gambar berformat JPEG, JPG, atau PNG.');
+                    Swal.fire({
+                        title: 'Format Berkas Salah',
+                        text: 'Mohon pilih file gambar berformat JPEG, JPG, atau PNG.',
+                        icon: 'error',
+                        confirmButtonColor: '#10b981',
+                        confirmButtonText: 'OK'
+                    });
                     fileInput.value = '';
                     return;
                 }

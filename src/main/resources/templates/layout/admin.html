@@ -5,6 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="${title} + ' | ZakaFlow Admin'">ZakaFlow Admin</title>
+    <link rel="shortcut icon" th:href="@{/img/icon.jpeg(v=1)}" type="image/x-icon"/>
+    <link rel="icon" th:href="@{/img/icon.jpeg(v=1)}" type="image/jpeg"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -59,6 +61,7 @@
                class="hover:text-primary-100 hover:bg-primary-800 px-3 py-2 rounded-lg transition">Pengguna</a>
             <a th:href="@{/}" class="hover:text-primary-200 text-primary-300 hover:bg-primary-800 px-3 py-2 rounded-lg transition text-xs">Situs</a>
             <form th:action="@{/logout}" method="post" class="inline ml-1">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type="submit" class="bg-accent-500 hover:bg-accent-600 px-3 py-2 rounded-lg transition font-semibold">Keluar</button>
             </form>
         </div>

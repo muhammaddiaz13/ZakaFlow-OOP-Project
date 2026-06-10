@@ -32,7 +32,10 @@
                 <a th:href="@{/admin/categories/{id}/edit(id=${c.id})}"
                    class="text-primary-700 hover:text-primary-900 font-medium">Edit</a>
                 <form th:action="@{/admin/categories/{id}/delete(id=${c.id})}" method="post"
-                      onsubmit="return confirm('Hapus kategori ini?');">
+                      class="inline js-confirm-submit"
+                      th:attr="data-confirm-title='Hapus Kategori?',
+                               data-confirm-text=|Kategori &quot;${c.name}&quot; akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.|,
+                               data-confirm-button='Ya, Hapus'">
                     <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Hapus</button>
                 </form>
             </div>
@@ -41,5 +44,6 @@
 </main>
 
 <footer th:replace="~{layout/admin :: footer}"></footer>
+<div th:replace="~{layout/admin :: confirmScripts}"></div>
 </body>
 </html>
