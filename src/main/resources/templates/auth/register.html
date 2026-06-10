@@ -47,7 +47,19 @@
             </button>
         </form>
 
-        <div th:replace="~{auth/_social :: dividerAndGoogle}"></div>
+        <div class="mt-6 flex items-center justify-between">
+            <span class="border-b border-surface-200 w-1/5 lg:w-1/4"></span>
+            <span class="text-xs text-center text-gray-400 uppercase tracking-wide">Atau</span>
+            <span class="border-b border-surface-200 w-1/5 lg:w-1/4"></span>
+        </div>
+
+        <div class="mt-6">
+            <a th:href="@{/oauth2/authorization/google}"
+               class="w-full flex items-center justify-center gap-3 bg-white border border-surface-200 text-gray-700 font-medium py-2.5 rounded-xl hover:bg-gray-50 transition shadow-sm">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5"/>
+                Lanjutkan dengan Google
+            </a>
+        </div>
 
         <p class="mt-6 text-sm text-gray-500 text-center">
             Sudah punya akun?

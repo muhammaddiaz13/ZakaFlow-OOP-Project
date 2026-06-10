@@ -1,5 +1,16 @@
 spring.application.name=zakaflow
 
+# Wajib di Railway/proxy agar OAuth2 redirect URI memakai https + domain publik (bukan host internal)
+server.forward-headers-strategy=framework
+
+# Google OAuth2 — set di Railway Variables (atau salin ke application.properties lokal)
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope=openid,profile,email
+# Default Spring Security; daftarkan persis ini di Google Cloud Console → Authorized redirect URIs
+spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+spring.security.oauth2.client.provider.google.issuer-uri=https://accounts.google.com
+
 spring.datasource.url=MASUKKAN_LINK_JDBC_SUPABASE_KALIAN
 spring.datasource.username=postgres
 spring.datasource.password=MASUKKAN_PASSWORD_DATABASE_SUPABASE_KALIAN

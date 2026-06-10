@@ -19,7 +19,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // SUDAH DIPERBAIKI: Menggunakan "/forgot-password/**" dengan garis miring di depan
-                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/forgot-password/**", "/error", "/css/**", "/js/**", "/img/**", "/uploads/**", "/image-upload/**").permitAll()
+                        .requestMatchers("/", "/programs/**", "/categories/**", "/login", "/register", "/forgot-password/**", "/oauth2/**", "/login/oauth2/**", "/error", "/css/**", "/js/**", "/img/**", "/uploads/**", "/image-upload/**").permitAll()
                         .requestMatchers("/user/**").hasRole("DONATUR")
                         .requestMatchers("/admin/**", "/transactions/**").hasRole("ADMIN")
                         .anyRequest().authenticated()) // Menggunakan authenticated() agar endpoint lain aman
