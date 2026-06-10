@@ -5,6 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="${title} + ' | ZakaFlow'">ZakaFlow</title>
+    <link rel="shortcut icon" th:href="@{/img/icon.jpeg(v=1)}" type="image/x-icon"/>
+    <link rel="icon" th:href="@{/img/icon.jpeg(v=1)}" type="image/jpeg"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     
@@ -94,6 +96,7 @@
                 <a sec:authorize="!isAuthenticated()" th:href="@{/programs}"
                    class="bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-xl shadow-sm transition font-semibold">Bayar Zakat</a>
                 <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <button type="submit"
                             class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl transition text-sm">
                         Keluar
