@@ -1,5 +1,6 @@
 package com.zakaflow.zakaflow.controller;
 
+import com.zakaflow.zakaflow.config.CustomUserDetails;
 import com.zakaflow.zakaflow.config.PaymentProperties;
 import com.zakaflow.zakaflow.model.DonationTransaction;
 import com.zakaflow.zakaflow.model.PaymentChannel;
@@ -323,6 +324,9 @@ public class UserDashboardController {
     }
 
     private User resolveUser(UserDetails principal) {
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getUser();
+        }
         return userService.findByUsername(principal.getUsername())
                 .orElseThrow(() -> new IllegalStateException("User tidak ditemukan"));
     }

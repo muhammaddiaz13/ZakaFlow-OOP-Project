@@ -15,12 +15,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .map(user -> org.springframework.security.core.userdetails.User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .roles(user.getRole() != null ? user.getRole() : user.getRoleEntity().getName())
-                        .build())
+        com.zakaflow.zakaflow.model.User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User tidak ditemukan: " + username));
+        return new CustomUserDetails(user);
     }
 }
