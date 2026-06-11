@@ -32,8 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-# Amankan kredensial database lokal
-src/main/resources/application.properties
+# File application.properties sekarang aman dilacak karena tidak ada rahasia hardcoded
 
 # Amankan script eksekusi lokal
 jalan.sh
