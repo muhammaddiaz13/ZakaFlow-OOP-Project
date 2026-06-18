@@ -138,7 +138,7 @@ public class DataInitializer implements CommandLineRunner {
 
 ### Frontend
 *   **Styling:** Tailwind CSS (via CDN)
-*   **Design Framework:** Clean Minimalist Glassmorphism (Palette warna: Hijau Emerald `#10b981` dan Oranye Amber `#f59e0b`)
+*   **Design Framework:** Clean Minimalist Glassmorphism 
 *   **Icons & Fonts:** Google Fonts (Inter) & SVG Icons bawaan Tailwind
 
 ### Database & Environment
