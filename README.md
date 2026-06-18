@@ -308,8 +308,10 @@ Saat pertama kali dijalankan, sistem secara otomatis menginisialisasi database d
 
 Projek ini dikembangkan sebagai tugas besar mata kuliah Pemrograman Berorientasi Objek (PBO) Semester 4.
 
-*   **Muhammad Diaz** ([@muhammaddiaz13](https://github.com/muhammaddiaz13)) - Lead Backend Developer & UI Designer.
-*   **Arkaan Ramadhan Rusdi** (@Arkan-usu)(https://github.com/Arkan-usu) - UI Website dan Logic Zakat
+*   **Muhammad Diaz**  - Lead Backend Developer & UI Designer.
+*   **Arkaan Ramadhan Rusdi**  - UI Website dan Logic Zakat
+*   **Muhammad Farhan Prasetyo**  - UI Website dan Backend
+*   **Risky Silaen**  - UI Website dan Logic Program
 
 ---
 *Dibuat dengan 💚 oleh Tim ZakaFlow.*
